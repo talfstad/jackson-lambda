@@ -14,10 +14,3 @@ Sincerely,
 <img alt="Trevor Alfstad Signature" class="signature" src=images/team/signatures/trevoralfstad.png />
 
 (Trevor Alfstad, Developer)
-
-
-<style>
-.signature {
-  width: 200px;
-}
-</style>
