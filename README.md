@@ -1,7 +1,7 @@
 ## Jackson
 ### RS-Glue
 
-Find more information on Jackson Core here:
+Find more information on Jackson RS-Glue here:
 https://github.com/Buildcave/jackson-rs-glue
 
 Find more information on the parent Jackson project here:
