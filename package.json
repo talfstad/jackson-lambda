@@ -4,7 +4,9 @@
   "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-rs-glue",
   "scripts": {
     "build": "./scripts/build.js",
-    "test": ""
+    "lint": "eslint .",
+    "test": "mocha --compilers js:babel-core/register --recursive ./test",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.2.0",
@@ -30,6 +33,7 @@
     "eslint-plugin-react": "^7.0.1",
     "fs": "0.0.1-security",
     "json-loader": "^0.5.4",
+    "mocha": "^3.4.1",
     "path": "^0.12.7",
     "webpack": "^2.6.0"
   },
