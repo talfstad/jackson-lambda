@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-rs-glue",
   "scripts": {
-    "build": "./scripts/build.js",
+    "deploy:ci": "./scripts/deploy-ci.js",
     "lint": "eslint .",
     "test": "mocha --compilers js:babel-core/register --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Buildcave/jackson-rs-glue.git"
@@ -35,6 +39,7 @@
     "json-loader": "^0.5.4",
     "mocha": "^3.4.1",
     "path": "^0.12.7",
+    "pre-commit": "git://github.com/observing/pre-commit#5eb7b9bf35e9d0322564ea2e28fc8c640590f3f1",
     "webpack": "^2.6.0"
   },
   "dependencies": {
