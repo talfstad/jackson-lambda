@@ -10,6 +10,7 @@ module.exports = {
     'mocha': true,
   },
   'rules': {
+    'import/no-extraneous-dependencies': ['error', {'devDependencies': true, 'optionalDependencies': false, 'peerDependencies': false}]
   },
   'parser': 'babel-eslint',
 };
