@@ -66,10 +66,10 @@ const deployLambdaFunctionToTest = () => {
           ZipFile: fs.readFileSync(`${__dirname}/../dist/${artifactVersion}.zip`),
         };
 
-        lambda.updateFunctionCode(updateFunctionCodeConfig, (err) => {
+        lambda.updateFunctionCode(updateFunctionCodeConfig, (err, data) => {
           if (err) throw new Error(err);
           else {
-            resolve();
+            resolve(data);
           }
         });
       });
@@ -92,8 +92,8 @@ const deployLambdaFunctionToTest = () => {
 cleanupOldDeployments()
   .then(createArtifactForDeployment)
   .then(deployLambdaFunctionToTest)
-  .then(() => {
-    console.log('Successfully Deployed RS-Glue to test');
+  .then((data) => {
+    console.log(data);
   })
   .catch((err) => {
     console.error(err);
