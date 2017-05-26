@@ -80,8 +80,10 @@ const deployLambdaFunctionToTest = () => {
 const enforceOnMasterBranch = () => {
   const promise = new Promise((resolve) => {
     gitRev.branch((branch) => {
-      if (branch !== 'master') throw new Error('Must be on master branch');
-      else {
+      if (branch !== 'master') {
+        console.log('Must be on master branch');
+        process.exit(0);
+      } else {
         resolve();
       }
     });
