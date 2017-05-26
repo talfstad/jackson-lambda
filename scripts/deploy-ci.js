@@ -1,3 +1,5 @@
+console.log(process.argv);
+
 const fs = require('fs');
 const archiver = require('archiver');
 const rimraf = require('rimraf');
@@ -81,7 +83,7 @@ const enforceOnMasterBranch = () => {
   const promise = new Promise((resolve) => {
     gitRev.branch((branch) => {
       if (branch !== 'master') {
-        console.log('Must be on master branch');
+        // console.warn('Not pushing to test. ');
         process.exit(0);
       } else {
         resolve();
