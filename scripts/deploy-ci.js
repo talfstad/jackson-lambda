@@ -1,5 +1,5 @@
 console.log(process.argv);
-
+console.log('TREVORRRR');
 const fs = require('fs');
 const archiver = require('archiver');
 const rimraf = require('rimraf');
