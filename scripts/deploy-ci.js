@@ -44,6 +44,7 @@ const createArtifactForDeployment = () => {
         });
         archive.pipe(output);
         archive.file('dist/rs-glue.min.js', { name: 'rs-glue.js' });
+        archive.file('config/aws.json');
         archive.finalize();
       })
       .catch((err) => {
