@@ -14,7 +14,7 @@
   ],
   "subjectPattern": "\\bapp.asana.com\\b",
   "subjectPatternErrorMsg": "subject does not match subject pattern!",
-  "maxSubjectLength": 200,
+  "maxSubjectLength": 500,
   "warnOnFail": false,
   "autoFix": false
 }

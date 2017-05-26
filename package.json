@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-rs-glue",
   "scripts": {
-    "deploy:ci": "node ./scripts/deploy-ci.js",
+    "deploy:ci": "webpack -p && npm run lint && npm run test && node ./scripts/deploy-ci.js",
     "precommit": "npm run lint && npm run test",
+    "prepush": "npm run deploy:ci",
     "commitmsg": "validate-commit-msg $GIT_PARAMS",
     "lint": "eslint .",
     "test": "mocha --compilers js:babel-core/register --recursive ./test",
@@ -37,6 +38,7 @@
     "eslint-plugin-react": "^7.0.1",
     "fs": "0.0.1-security",
     "git-describe": "^4.0.1",
+    "git-rev": "^0.2.1",
     "husky": "^0.13.3",
     "json-loader": "^0.5.4",
     "mocha": "^3.4.1",
@@ -46,6 +48,6 @@
     "webpack": "^2.6.0"
   },
   "dependencies": {
-    "path": "^0.12.7"
+    "redis": "^2.7.1"
   }
 }

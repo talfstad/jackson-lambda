@@ -1,24 +1,13 @@
-const webpack = require('webpack');
-const webpackConfig = require('../webpack.config');
 const fs = require('fs');
 const archiver = require('archiver');
 const rimraf = require('rimraf');
 const AWS = require('aws-sdk');
 const { gitDescribe } = require('git-describe');
-
-const buildLatestVersion = () => {
-  const promise = new Promise((resolve, reject) => {
-    webpack(webpackConfig, (err) => {
-      if (err) reject();
-      resolve();
-    });
-  });
-  return promise;
-};
+const gitRev = require('git-rev');
 
 const cleanupOldDeployments = () => {
   const promise = new Promise((resolve, reject) => {
-    rimraf('./dist/rs-glue-*', (err) => {
+    rimraf('./dist/*.zip', (err) => {
       if (err) reject();
       resolve();
     });
@@ -31,7 +20,7 @@ const getArtifactVersionForDeployment = () => {
     // get the version from last tag.
     gitDescribe({ dirtySemver: false })
       .then((response) => {
-        // if (response.dirty) throw new Error('Please check in working tree before deploying.');
+        if (response.dirty) throw new Error('Please check in working tree before deploying.');
         resolve(response.raw);
       })
       .catch(err => reject(err));
@@ -47,10 +36,15 @@ const createArtifactForDeployment = () => {
           zlib: { level: 9 },
         });
         const output = fs.createWriteStream(`./dist/${artifactVersion}.zip`);
+        output.on('close', () => {
+          resolve({ artifactVersion });
+        });
+        archive.on('error', (err) => {
+          throw new Error(err);
+        });
         archive.pipe(output);
         archive.file('dist/rs-glue.min.js', { name: 'rs-glue.js' });
         archive.finalize();
-        resolve({ artifactVersion });
       })
       .catch((err) => {
         reject(err);
@@ -61,28 +55,47 @@ const createArtifactForDeployment = () => {
 
 const deployLambdaFunctionToTest = () => {
   const promise = new Promise((resolve) => {
-    AWS.config.loadFromPath('./config/aws.json');
-    const lambda = new AWS.Lambda();
+    getArtifactVersionForDeployment()
+      .then((artifactVersion) => {
+        AWS.config.loadFromPath('./config/aws.json');
+        const lambda = new AWS.Lambda();
 
-    const updateFunctionCodeConfig = {
-      FunctionName: 'rs-glue',
-      Publish: true,
-      ZipFile: fs.readFileSync(`${__dirname}/../dist/v0.1-7-g584a1cc-dirty.zip`),
-    };
+        const updateFunctionCodeConfig = {
+          FunctionName: 'rs-glue',
+          Publish: true,
+          ZipFile: fs.readFileSync(`${__dirname}/../dist/${artifactVersion}.zip`),
+        };
 
-    // get the version from git, then create function, publish
-    lambda.updateFunctionCode(updateFunctionCodeConfig, (err) => {
-      if (err) throw new Error(err);
-      else resolve();
+        lambda.updateFunctionCode(updateFunctionCodeConfig, (err) => {
+          if (err) throw new Error(err);
+          else {
+            resolve();
+          }
+        });
+      });
+  });
+  return promise;
+};
+
+const enforceOnMasterBranch = () => {
+  const promise = new Promise((resolve) => {
+    gitRev.branch((branch) => {
+      if (branch !== 'master') throw new Error('Must be on master branch');
+      else {
+        resolve();
+      }
     });
   });
   return promise;
 };
 
-buildLatestVersion()
+enforceOnMasterBranch()
   .then(cleanupOldDeployments)
   .then(createArtifactForDeployment)
   .then(deployLambdaFunctionToTest)
+  .then(() => {
+    console.log('Successfully Deployed RS-Glue to test');
+  })
   .catch((err) => {
     console.error(err);
     process.exit(1);
