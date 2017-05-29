@@ -1,8 +1,8 @@
 ## Jackson
-### RS-Glue
+### Lambda
 
-Find more information on Jackson RS-Glue here:
-https://github.com/Buildcave/jackson-rs-glue
+Find more information on Jackson lambda here:
+https://github.com/Buildcave/jackson-lambda
 
 Find more information on the parent Jackson project here:
 https://github.com/Buildcave/jackson

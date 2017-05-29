@@ -1,7 +1,7 @@
 {
-  "name": "jackson-rs-glue",
+  "name": "jackson-lambda",
   "version": "1.0.0",
-  "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-rs-glue",
+  "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-lambda",
   "scripts": {
     "deploy:ci": "webpack -p && npm run lint && npm run test && node ./scripts/deploy-ci.js",
     "precommit": "npm run lint && npm run test",
@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Buildcave/jackson-rs-glue.git"
+    "url": "git+https://github.com/Buildcave/jackson-lambda.git"
   },
   "author": "Buildcave, LLC",
   "bugs": {
-    "url": "https://github.com/Buildcave/jackson-rs-glue/issues"
+    "url": "https://github.com/Buildcave/jackson-lambda/issues"
   },
-  "homepage": "https://github.com/Buildcave/jackson-rs-glue#readme",
+  "homepage": "https://github.com/Buildcave/jackson-lambda#readme",
   "devDependencies": {
     "archiver": "^1.3.0",
     "aws-sdk": "^2.57.0",
