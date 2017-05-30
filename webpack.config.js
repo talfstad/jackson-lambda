@@ -19,6 +19,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
@@ -30,6 +31,10 @@ module.exports = {
       },
     ],
   },
+  target: 'node',
+  externals: {
+    'geoip-country-lite': 'geoip-country-lite',
+  },
   output: {
     path: path.join(__dirname, '/dist/'),
     library: '[name]',
@@ -39,9 +44,9 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      compress: true,
-      mangle: true,
+      comments: true,
+      compress: false,
+      mangle: false,
       sourcemap: false,
       compressor: {
         warnings: false,

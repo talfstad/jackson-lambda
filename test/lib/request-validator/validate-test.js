@@ -1,7 +1,7 @@
 import {
     expect,
 } from 'chai';
-import requestValidator from '../../lib/request-validator/index';
+import requestValidator from '../../../lib/request-validator/index';
 
 describe('Request Validator -> validate()', () => {
   const requestHost = 'test.cdnjs.io';

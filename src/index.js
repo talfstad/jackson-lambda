@@ -2,16 +2,18 @@ import path from 'path';
 import requestValidator from '../lib/request-validator';
 
 exports.handler = (event, context, callback) => {
-  const requestHost = event.headers.Host;
   const requestPath = event.path;
   const requestMethod = event.httpMethod;
-
+  const requestBody = event.body || {};
+  const requestHeaders = event.headers;
   requestValidator.validate({
-    requestHost,
     requestMethod,
     requestPath,
+    requestBody,
+    requestHeaders,
   })
-    .then(() => {
+    .then((jacksonCoreInputParams) => {
+      console.log(jacksonCoreInputParams);
       // request is valid so handle it...
       const response = {
         statusCode: 200,
