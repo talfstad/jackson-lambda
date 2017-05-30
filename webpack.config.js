@@ -3,14 +3,14 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-  context: path.join(__dirname, 'lambdas'),
-  entry: fs.readdirSync(path.join(__dirname, './lambdas'))
+  context: path.join(__dirname, 'src'),
+  entry: fs.readdirSync(path.join(__dirname, './src'))
          .filter(filename => /\.js$/.test(filename))
          .map((filename) => {
            const entry = {};
            entry[filename.replace('.js', '')] = path.join(
              __dirname,
-             './lambdas/',
+             './src/',
              filename);
            return entry;
          })

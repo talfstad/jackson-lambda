@@ -3,7 +3,6 @@ const archiver = require('archiver');
 const rimraf = require('rimraf');
 const AWS = require('aws-sdk');
 const { gitDescribe } = require('git-describe');
-// const gitRev = require('git-rev');
 
 const cleanupOldDeployments = () => {
   const promise = new Promise((resolve, reject) => {
@@ -43,7 +42,7 @@ const createArtifactForDeployment = () => {
           throw new Error(err);
         });
         archive.pipe(output);
-        archive.file('dist/jackson-lambda.min.js', { name: 'jackson-lambda.js' });
+        archive.file('dist/index.min.js', { name: 'index.js' });
         archive.file('config/aws.json');
         archive.finalize();
       })
@@ -78,18 +77,6 @@ const deployLambdaFunctionToTest = () => {
   return promise;
 };
 
-// const enforceOnMasterBranch = () => {
-//   const promise = new Promise((resolve) => {
-//     gitRev.branch((branch) => {
-//       if (branch !== 'master')
-//           throw new Error('Not deploying to test. Must be on master branch.');
-//       else resolve();
-//     });
-//   });
-//   return promise;
-// };
-
-// enforceOnMasterBranch()
 cleanupOldDeployments()
   .then(createArtifactForDeployment)
   .then(deployLambdaFunctionToTest)
