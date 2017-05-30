@@ -1,6 +1,7 @@
 import {
     expect,
 } from 'chai';
+import path from 'path';
 import lambda from '../../src/index';
 
 describe('Jackson Lambda -> index.js', () => {
@@ -65,28 +66,15 @@ describe('Jackson Lambda -> index.js', () => {
     body: null,
     isBase64Encoded: false,
   };
-
-  it('has returns the correct redirect response for API Gateway', () => {});
-
-  it('Rejects correct Method wrong path', () => {
-    lambda.handler(event, {}, (err, response) => {
-      console.log(response);
-      expect(err).to.equal(null);
-      expect(response).to.not.equal(null);
-    });
-  });
-
-  it('Rejects correct path wrong method', () => {
-    lambda.handler(event, {}, (err, response) => {
-      expect(err).to.equal(null);
-      expect(response).to.not.equal(null);
-    });
-  });
+  const forwardingHost = 'cdnjs.cloudflare.com';
 
   it('Correctly maps with path to new host for a redirect', () => {
     lambda.handler(event, {}, (err, response) => {
       expect(err).to.equal(null);
-      expect(response).to.not.equal(null);
+      expect(response.headers).to.not.equal(null);
+      expect(response.headers.Location).to.not.equal(null);
+      expect(response.headers.Location).to
+        .equal(`https://${path.join(forwardingHost, event.path)}`);
     });
   });
 });
