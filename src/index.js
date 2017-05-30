@@ -1,6 +1,5 @@
 import path from 'path';
 import requestValidator from '../lib/request-validator';
-import forwardingHostMapping from '../config/src/forwarding-host-mapping';
 
 exports.handler = (event, context, callback) => {
   const requestHost = event.headers.Host;
@@ -14,12 +13,17 @@ exports.handler = (event, context, callback) => {
   })
     .then(() => {
       // request is valid so handle it...
+      const response = {
+        statusCode: 200,
+      };
+      callback(null, response);
     })
     .catch(() => {
+      const { redirectHost } = event.stageVariables;
       const response = {
         statusCode: 302,
         headers: {
-          Location: `https://${path.join(forwardingHostMapping[requestHost], event.path)}`,
+          Location: `https://${path.join(redirectHost, event.path)}`,
         },
       };
       callback(null, response);
