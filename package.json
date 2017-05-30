@@ -41,12 +41,12 @@
     "husky": "^0.13.3",
     "json-loader": "^0.5.4",
     "mocha": "^3.4.1",
-    "path": "^0.12.7",
     "rimraf": "^2.6.1",
     "validate-commit-msg": "^2.12.1",
     "webpack": "^2.6.0"
   },
   "dependencies": {
+    "path": "^0.12.7",
     "redis": "^2.7.1"
   }
 }

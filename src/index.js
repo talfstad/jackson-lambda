@@ -1,18 +1,18 @@
-exports.handler = (event, context, callback) => {
-  const name = 'World';
-  const responseCode = 200;
+import path from 'path';
+import requestValidator from '../lib/request-validator';
 
-  const responseBody = {
-    message: `Hello ${name}!`,
-    input: event,
-  };
-  const response = {
-    statusCode: responseCode,
-    headers: {
-      'x-custom-header': 'my custom header value',
-    },
-    body: JSON.stringify(responseBody),
-  };
-  console.log(`response: ${JSON.stringify(response)}`);
-  callback(null, response);
+exports.handler = (event, context, callback) => {
+  requestValidator.validate()
+    .then(() => {
+      // request is valid so handle it...
+    })
+    .catch(() => {
+      const response = {
+        statusCode: 302,
+        headers: {
+          Location: `https://${path.join('cdnjs.cloudflare.com', event.path)}`,
+        },
+      };
+      callback(null, response);
+    });
 };

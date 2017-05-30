@@ -15,7 +15,6 @@ module.exports = {
            return entry;
          })
          .reduce((finalObject, entry) => Object.assign(finalObject, entry), {}),
-  target: 'node',
   module: {
     rules: [
       {
