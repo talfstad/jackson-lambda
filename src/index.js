@@ -1,8 +1,6 @@
-import requestValidator from '../lib/request-validator';
-import { forwardResponse } from '../lib/response-generator';
-import {
-  processRequest,
-} from '../../jackson-core';
+import RequestValidator from '../lib/request-validator';
+import ResponseGenerator from '../lib/response-generator';
+import JacksonCore from '../../jackson-core';
 
 exports.handler = (event, context, callback) => {
   const requestPath = event.path;
@@ -11,15 +9,16 @@ exports.handler = (event, context, callback) => {
   const requestHeaders = event.headers;
   const { redirectHost } = event.stageVariables;
 
-  requestValidator.validate({
+  RequestValidator.validate({
     requestMethod,
     requestPath,
     requestBody,
     requestHeaders,
   })
     .then((requestParams) => {
-      processRequest(requestParams)
+      JacksonCore.processRequest(requestParams)
         .then((response) => {
+          console.log(response);
           // returns data to be interpreted
           // TODO: get interpreted response template with jquery + jack code
           // const response = {
@@ -31,12 +30,11 @@ exports.handler = (event, context, callback) => {
           // throw new Error('test if this gets to second');
           callback(null, response);
         })
-        .catch((e) => {
-          callback(e);
-          callback(null, forwardResponse({ redirectHost, requestPath }));
+        .catch(() => {
+          callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
         });
     })
     .catch(() => {
-      callback(null, forwardResponse({ redirectHost, requestPath }));
+      callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
     });
 };

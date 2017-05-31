@@ -114,10 +114,10 @@ describe('Jackson Lambda -> index.js', () => {
       try {
         expect(err).to.equal(null);
         const {
-                    headers = {},
-                } = response;
+            headers = {},
+        } = response;
         expect(headers.Location).to
-                    .equal(undefined);
+          .equal(undefined);
         done();
       } catch (e) {
         done(e);
