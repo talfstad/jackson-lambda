@@ -17,18 +17,11 @@ exports.handler = (event, context, callback) => {
   })
     .then((requestParams) => {
       JacksonCore.processRequest(requestParams)
-        .then((response) => {
-          console.log(response);
-          // returns data to be interpreted
-          // TODO: get interpreted response template with jquery + jack code
-          // const response = {
-          //   body: responseJquery,
-          //   statusCode: 200,
-          // };
-
-          // throwing an error here sends us to the catch block below
-          // throw new Error('test if this gets to second');
-          callback(null, response);
+        .then((templateValues) => {
+          callback(null, ResponseGenerator.templateResponse({
+            ...templateValues,
+            template: 'jquery',
+          }));
         })
         .catch(() => {
           callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
