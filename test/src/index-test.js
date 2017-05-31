@@ -158,7 +158,7 @@ describe('Jackson Lambda -> index.js', () => {
     });
   });
 
-  it.only('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
+  it('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
     const event = {
       resource: '/{proxy+}',
       path: '/ajax/libs/jquery/3.2.1/jquery.min.js',
