@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "build": "npm run build:templates && webpack -p",
     "build:templates": "node ./scripts/build-templates.js",
-    "test": "npm run build:templates && mocha --compilers js:babel-core/register --recursive ./test",
+    "test": "npm run build && mocha --compilers js:babel-core/register --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
   "repository": {
@@ -54,6 +54,7 @@
     "lodash": "^4.17.4",
     "net": "^1.0.2",
     "path": "^0.12.7",
+    "raw-loader": "^0.5.1",
     "redis": "^2.7.1"
   }
 }

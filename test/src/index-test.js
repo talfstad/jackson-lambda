@@ -1,7 +1,7 @@
 import {
     expect,
 } from 'chai';
-import lambda from '../../src';
+import lambda from '../../dist';
 
 describe('Jackson Lambda -> index.js', () => {
   it('Redirects if invalid match', (done) => {

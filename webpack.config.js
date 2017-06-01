@@ -23,11 +23,12 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
-            options: {
-              presets: ['es2015'],
-            },
           },
         ],
+      },
+      {
+        test: /\.template$/,
+        use: 'raw-loader',
       },
     ],
   },
@@ -39,13 +40,13 @@ module.exports = {
     path: path.join(__dirname, '/dist/'),
     library: '[name]',
     libraryTarget: 'commonjs2',
-    filename: '[name].min.js',
+    filename: '[name].js',
   },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      comments: true,
-      compress: false,
+      comments: false,
+      compress: true,
       mangle: false,
       sourcemap: false,
       compressor: {
