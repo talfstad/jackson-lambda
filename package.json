@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-lambda",
   "scripts": {
-    "verify:build": "npm run test && npm run lint",
-    "deploy:ci": "npm run verify:build && node ./scripts/deploy-ci.js",
-    "precommit": "npm run verify:build",
+    "deploy:ci": "npm run build:verify && node ./scripts/deploy-ci.js",
+    "precommit": "npm run build:verify",
     "commitmsg": "validate-commit-msg $GIT_PARAMS",
     "lint": "eslint .",
     "build": "npm run build:templates && webpack -p",
+    "build:verify": "npm run test && npm run lint",
     "build:templates": "node ./scripts/build-templates.js",
     "test": "npm run build && mocha --compilers js:babel-core/register --recursive ./test",
     "test:watch": "npm run test -- --watch"

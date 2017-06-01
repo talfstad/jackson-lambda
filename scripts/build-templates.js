@@ -31,8 +31,6 @@ const buildTemplates = () => {
       },
       output: {
         path: path.join(context, 'dist'),
-        library: 'lib',
-        libraryTarget: 'commonjs2',
         filename: '[name].template',
       },
       plugins: [
