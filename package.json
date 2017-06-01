@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Find more information on Jackson RS Glue here: https://github.com/Buildcave/jackson-lambda",
   "scripts": {
-    "verify:build": "npm run build && npm run lint && npm run test",
+    "verify:build": "npm run test && npm run lint",
     "deploy:ci": "npm run verify:build && node ./scripts/deploy-ci.js",
     "precommit": "npm run verify:build",
     "commitmsg": "validate-commit-msg $GIT_PARAMS",

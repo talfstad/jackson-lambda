@@ -8,7 +8,6 @@ exports.handler = (event, context, callback) => {
   const requestBody = event.body || {};
   const requestHeaders = event.headers;
   const { redirectHost } = event.stageVariables;
-
   RequestValidator.validate({
     requestMethod,
     requestPath,

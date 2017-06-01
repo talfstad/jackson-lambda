@@ -42,7 +42,7 @@ const createArtifactForDeployment = () => {
           throw new Error(err);
         });
         archive.pipe(output);
-        archive.file('dist/index.min.js', { name: 'index.js' });
+        archive.file('dist/index.js', { name: 'index.js' });
         archive.file('config/aws.json');
         archive.directory('node_modules/geoip-country-lite');
         archive.finalize();
