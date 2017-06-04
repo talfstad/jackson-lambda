@@ -43,8 +43,8 @@
     "git-rev": "^0.2.1",
     "husky": "^0.13.3",
     "json-loader": "^0.5.4",
-    "mocha-webpack": "^0.7.0",
     "mocha": "^3.4.1",
+    "mocha-webpack": "^0.7.0",
     "rimraf": "^2.6.1",
     "validate-commit-msg": "^2.12.1",
     "webpack": "^2.6.0"
@@ -54,6 +54,7 @@
     "geoip-country-lite": "^1.0.0",
     "lodash": "^4.17.4",
     "net": "^1.0.2",
+    "npmlog": "^4.1.0",
     "path": "^0.12.7",
     "raw-loader": "^0.5.1",
     "redis": "^2.7.1"

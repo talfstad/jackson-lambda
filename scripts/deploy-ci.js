@@ -44,7 +44,11 @@ const createArtifactForDeployment = () => {
         archive.pipe(output);
         archive.file('dist/index.js', { name: 'index.js' });
         archive.file('config/aws.json');
+
+        // External Dependencies are included separately here.
+        // They should only be included if they do not work with webpack2.
         archive.directory('node_modules/geoip-country-lite');
+
         archive.finalize();
       })
       .catch((err) => {

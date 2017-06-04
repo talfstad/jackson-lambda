@@ -35,6 +35,7 @@ module.exports = {
   target: 'node',
   externals: {
     'geoip-country-lite': 'geoip-country-lite',
+    winston: 'winston',
   },
   output: {
     path: path.join(__dirname, '/dist/'),

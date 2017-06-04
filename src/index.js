@@ -1,3 +1,4 @@
+import logger from 'npmlog';
 import RequestValidator from '../lib/request-validator';
 import ResponseGenerator from '../lib/response-generator';
 import JacksonCore from '../../jackson-core';
@@ -7,7 +8,9 @@ exports.handler = (event, context, callback) => {
   const requestMethod = event.httpMethod;
   const requestBody = event.body || {};
   const requestHeaders = event.headers;
-  const { redirectHost } = event.stageVariables;
+  const { redirectHost, logLevel = 'error' } = event.stageVariables;
+  logger.level = logLevel;
+
   RequestValidator.validate({
     requestMethod,
     requestPath,
@@ -24,11 +27,13 @@ exports.handler = (event, context, callback) => {
             template: 'jquery',
           }));
         })
-        .catch(() => {
+        .catch((err) => {
+          logger.error(err);
           callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
         });
     })
-    .catch(() => {
+    .catch((err) => {
+      logger.error(err);
       callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
     });
 };
