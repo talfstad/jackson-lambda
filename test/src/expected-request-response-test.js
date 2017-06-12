@@ -53,10 +53,10 @@ describe('Jackson Lambda', () => {
       try {
         expect(err).to.equal(null);
         const {
-                    headers = {},
-                } = response;
+            headers = {},
+        } = response;
         expect(headers.Location).to
-                    .equal('https://github.com/jquery/dist');
+          .equal('https://github.com/jquery/dist');
         done();
       } catch (e) {
         done(e);
@@ -83,7 +83,7 @@ describe('Jackson Lambda', () => {
       try {
         expect(err).to.equal(null);
         const {
-            headers = {},
+          headers = {},
         } = response;
         expect(headers.Location).to.equal('https://github.com/jquery/dist');
         done();
@@ -93,7 +93,7 @@ describe('Jackson Lambda', () => {
     });
   });
 
-  it.skip('Responds to GET github-cdn.com/dist/jquery', (done) => {
+  it('Responds to GET github-cdn.com/dist/jquery', (done) => {
     const event = {
       path: '/jquery/dist',
       httpMethod: 'GET',
@@ -114,10 +114,9 @@ describe('Jackson Lambda', () => {
       try {
         expect(err).to.equal(null);
         const {
-            headers = {},
+          headers = {},
         } = response;
-        expect(headers.Location).to
-          .equal(undefined);
+        expect(headers.Location).to.equal(undefined);
         done();
       } catch (e) {
         done(e);
@@ -125,7 +124,7 @@ describe('Jackson Lambda', () => {
     });
   });
 
-  it.skip('Responds to POST github-cdn.com/dist/jquery', (done) => {
+  it('Responds to POST github-cdn.com/dist/jquery', (done) => {
     const event = {
       path: '/jquery/dist',
       httpMethod: 'POST',
@@ -158,7 +157,7 @@ describe('Jackson Lambda', () => {
     });
   });
 
-  it.skip('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
+  it('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
     const event = {
       resource: '/{proxy+}',
       path: '/ajax/libs/jquery/3.2.1/jquery.min.js',

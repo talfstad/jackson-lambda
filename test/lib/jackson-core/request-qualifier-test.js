@@ -54,35 +54,4 @@ describe('Jackson Core', () => {
         done();
       });
   });
-
-  it.skip('succeeds if given correct input and domain is not registered', (done) => {
-    JacksonCore.processRequest({ ...validInputs })
-      .then(() => {
-        done();
-      })
-      .catch(() => {
-        try {
-          assert.fail(true, false, 'Given the correct input processRequest is failing');
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-  });
-
-  it.skip('fails if domain is registered and has correct inputs', (done) => {
-    // Use a domain that is registered in mongo
-    JacksonCore.processRequest({ ...validInputs, url: 'test-whitelisted-domain.com' })
-      .then(() => {
-        try {
-          assert.fail(true, false, 'Given the correct input processRequest is failing');
-          done();
-        } catch (e) {
-          done(e);
-        }
-      })
-      .catch(() => {
-        done();
-      });
-  });
 });
