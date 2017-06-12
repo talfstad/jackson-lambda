@@ -36,6 +36,8 @@ module.exports = {
   externals: {
     'geoip-country-lite': 'geoip-country-lite',
     winston: 'winston',
+    mongoose: 'mongoose',
+    redis: 'redis',
   },
   output: {
     path: path.join(__dirname, '/dist/'),

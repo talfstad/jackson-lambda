@@ -53,6 +53,7 @@
     "fs": "0.0.1-security",
     "geoip-country-lite": "^1.0.0",
     "lodash": "^4.17.4",
+    "mongoose": "^4.10.5",
     "net": "^1.0.2",
     "npmlog": "^4.1.0",
     "path": "^0.12.7",

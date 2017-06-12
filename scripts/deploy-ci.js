@@ -48,6 +48,8 @@ const createArtifactForDeployment = () => {
         // External Dependencies are included separately here.
         // They should only be included if they do not work with webpack2.
         archive.directory('node_modules/geoip-country-lite');
+        archive.directory('node_modules/mongoose');
+        archive.directory('node_modules/redis');
 
         archive.finalize();
       })

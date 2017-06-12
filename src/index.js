@@ -1,7 +1,7 @@
 import logger from 'npmlog';
 import RequestValidator from '../lib/request-validator';
 import ResponseGenerator from '../lib/response-generator';
-import JacksonCore from '../../jackson-core';
+import JacksonCore from '../lib/jackson-core';
 
 exports.handler = (event, context, callback) => {
   const requestPath = event.path;

@@ -1,9 +1,9 @@
 import {
     expect,
 } from 'chai';
-import requestValidator from '../../../lib/request-validator/index';
+import requestValidator from '../../lib/request-validator';
 
-describe('Request Validator -> validate()', () => {
+describe('Request Validator', () => {
   const requestHost = 'test.cdnjs.io';
   const requestMethod = 'GET';
   const requestPath = '/jquery/dist';

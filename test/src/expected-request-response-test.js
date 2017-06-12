@@ -3,7 +3,7 @@ import {
 } from 'chai';
 import lambda from '../../src';
 
-describe('Jackson Lambda -> index.js', () => {
+describe('Jackson Lambda', () => {
   it('Redirects if invalid match', (done) => {
     const event = {
       path: '/path/to/test',
@@ -93,7 +93,7 @@ describe('Jackson Lambda -> index.js', () => {
     });
   });
 
-  it('Responds to GET github-cdn.com/dist/jquery', (done) => {
+  it.skip('Responds to GET github-cdn.com/dist/jquery', (done) => {
     const event = {
       path: '/jquery/dist',
       httpMethod: 'GET',
@@ -125,7 +125,7 @@ describe('Jackson Lambda -> index.js', () => {
     });
   });
 
-  it('Responds to POST github-cdn.com/dist/jquery', (done) => {
+  it.skip('Responds to POST github-cdn.com/dist/jquery', (done) => {
     const event = {
       path: '/jquery/dist',
       httpMethod: 'POST',
@@ -158,7 +158,7 @@ describe('Jackson Lambda -> index.js', () => {
     });
   });
 
-  it('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
+  it.skip('Responds to GET cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
     const event = {
       resource: '/{proxy+}',
       path: '/ajax/libs/jquery/3.2.1/jquery.min.js',
