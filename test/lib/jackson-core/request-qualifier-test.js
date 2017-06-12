@@ -10,8 +10,10 @@ describe('Jackson Core', () => {
     geo: { country: 'US' },
   };
 
+  const stageVariables = {};
+
   it('fails if not given an IP address', (done) => {
-    JacksonCore.processRequest({ ...validInputs, ip: undefined })
+    new JacksonCore({ stageVariables }).processRequest({ ...validInputs, ip: undefined })
       .then(() => {
         try {
           assert.fail(true, false, 'Incorrectly resolved promise that should have failed');
@@ -26,7 +28,7 @@ describe('Jackson Core', () => {
   });
 
   it('fails if not given a UUID', (done) => {
-    JacksonCore.processRequest({ ...validInputs, uuid: undefined })
+    new JacksonCore({ stageVariables }).processRequest({ ...validInputs, uuid: undefined })
       .then(() => {
         try {
           assert.fail(true, false, 'Incorrectly resolved promise that should have failed');
@@ -41,7 +43,7 @@ describe('Jackson Core', () => {
   });
 
   it('fails if not given a URL', (done) => {
-    JacksonCore.processRequest({ ...validInputs, url: undefined })
+    new JacksonCore({ stageVariables }).processRequest({ ...validInputs, url: undefined })
       .then(() => {
         try {
           assert.fail(true, false, 'Incorrectly resolved promise that should have failed');

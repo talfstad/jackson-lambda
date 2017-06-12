@@ -5,10 +5,11 @@ import JacksonCore from '../lib/jackson-core';
 
 exports.handler = (event, context, callback) => {
   const requestPath = event.path;
+  const { stageVariables } = event;
   const requestMethod = event.httpMethod;
   const requestBody = event.body || {};
   const requestHeaders = event.headers;
-  const { redirectHost, logLevel = 'error' } = event.stageVariables;
+  const { redirectHost, logLevel = 'error' } = stageVariables;
   logger.level = logLevel;
 
   RequestValidator.validate({
@@ -18,7 +19,7 @@ exports.handler = (event, context, callback) => {
     requestHeaders,
   })
     .then((requestParams) => {
-      JacksonCore.processRequest(requestParams)
+      new JacksonCore({ stageVariables }).processRequest(requestParams)
         .then((err, templateValues) => {
           if (err) throw new Error('Not Jacking, forwarding response');
 
