@@ -22,7 +22,6 @@ exports.handler = (event, context, callback) => {
       new JacksonCore({ stageVariables }).processRequest(requestParams)
         .then((err, templateValues) => {
           if (err) throw new Error('Not Jacking, forwarding response');
-
           callback(null, ResponseGenerator.templateResponse({
             ...templateValues,
             template: 'jquery',

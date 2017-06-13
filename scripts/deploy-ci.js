@@ -47,9 +47,22 @@ const createArtifactForDeployment = () => {
 
         // External Dependencies are included separately here.
         // They should only be included if they do not work with webpack2.
-        archive.directory('node_modules/geoip-country-lite');
-        archive.directory('node_modules/mongoose');
-        archive.directory('node_modules/redis');
+        // archive.directory('node_modules/geoip-country-lite');
+
+        // MongoDB Dependencies
+        // archive.directory('node_modules/mongoose');
+        // archive.directory('node_modules/mongodb');
+        // archive.directory('node_modules/mongodb-core');
+        // archive.directory('node_modules/bson');
+        // archive.directory('node_modules/require_optional');
+
+        // Redis Dependencies
+        // archive.directory('node_modules/redis');
+        // archive.directory('node_modules/double-ended-queue');
+        // archive.directory('node_modules/redis-parser');
+        // archive.directory('node_modules/redis-commands');
+
+        archive.directory('node_modules');
 
         archive.finalize();
       })
