@@ -10,7 +10,7 @@
     "build": "npm run build:templates && webpack -p",
     "build:verify": "npm run test && npm run lint",
     "build:templates": "node ./scripts/build-templates.js",
-    "test": "mocha-webpack --recursive --webpack-config webpack.config.js test",
+    "test": "mocha-webpack --timeout 15000 --recursive --webpack-config webpack.config.js test",
     "test:watch": "npm run test -- --watch"
   },
   "repository": {

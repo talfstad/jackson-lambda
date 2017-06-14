@@ -15,8 +15,31 @@ redisClient.on('error', (e) => {
 redisClient.set('test', 'test value');
 redisClient.expire('test', '5');
 
+redisClient.keys('*', (err, keys) => {
+  console.log(err);
+  console.log(keys);
+});
+
 redisClient.del('whitelistedDomains', (err, data) => {
   console.log('deleted whitelisted domains test');
+  if (err) console.log(err);
+  else console.log(data);
+});
+
+redisClient.del('undefined', (err, data) => {
+  console.log('deleted undefined key');
+  if (err) console.log(err);
+  else console.log(data);
+});
+
+redisClient.del('http://somewebsite.com', (err, data) => {
+  console.log('deleted http://somewebsite.com key');
+  if (err) console.log(err);
+  else console.log(data);
+});
+
+redisClient.del('https://some-lander.com/landingpage.html', (err, data) => {
+  console.log('deleted https://some-lander.com/landingpage.html key');
   if (err) console.log(err);
   else console.log(data);
 });

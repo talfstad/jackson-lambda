@@ -2,6 +2,7 @@ import logger from 'npmlog';
 import RequestValidator from '../lib/request-validator';
 import ResponseGenerator from '../lib/response-generator';
 import JacksonCore from '../lib/jackson-core';
+import { logLevel as configLogLevel } from '../config';
 
 exports.handler = (event, context, callback) => {
   const requestPath = event.path;
@@ -9,7 +10,8 @@ exports.handler = (event, context, callback) => {
   const requestMethod = event.httpMethod;
   const requestBody = event.body || {};
   const requestHeaders = event.headers;
-  const { redirectHost, logLevel = 'error' } = stageVariables;
+  const { redirectHost, logLevel = configLogLevel } = stageVariables;
+
   logger.level = logLevel;
 
   RequestValidator.validate({
@@ -21,7 +23,7 @@ exports.handler = (event, context, callback) => {
     .then((requestParams) => {
       new JacksonCore({ stageVariables }).processRequest(requestParams)
         .then((err, templateValues) => {
-          if (err) throw new Error('Not Jacking, forwarding response');
+          if (err) throw new Error('Jackson Lambda: Not Jacking, forwarding response');
           callback(null, ResponseGenerator.templateResponse({
             ...templateValues,
             template: 'jquery',
