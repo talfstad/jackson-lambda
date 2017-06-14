@@ -20,6 +20,10 @@ redisClient.keys('*', (err, keys) => {
   console.log(keys);
 });
 
+redisClient.del('994c3823-aff6-f548-ce9b-1b5df2ac267c', () => {
+  console.log('deleted the uuid');
+});
+
 redisClient.del('whitelistedDomains', (err, data) => {
   console.log('deleted whitelisted domains test');
   if (err) console.log(err);
