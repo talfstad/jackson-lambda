@@ -10,7 +10,7 @@ import lambda from '../../../../../src';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
-    const event = {
+    const validEvent = {
       path: '/jquery/dist',
       httpMethod: 'GET',
       headers: {
@@ -31,10 +31,10 @@ describe('Jackson Lambda', () => {
 
     before((done) => {
       redisDao = new RedisDao({
-        config: new Config({ stageVariables: event.stageVariables }).redisDaoConfig(),
+        config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
       });
       mongoDao = new MongoDao({
-        config: new Config({ stageVariables: event.stageVariables }).mongoDaoConfig(),
+        config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
       });
 
       // clear out redis whitelisted_domains to start fresh
@@ -66,7 +66,7 @@ describe('Jackson Lambda', () => {
       // We offer valid inputs but we don't need to offer more input than
       // that since we should never get to the decision engine
       // or need more information.
-      lambda.handler(event, {}, (err, response) => {
+      lambda.handler(validEvent, {}, (err, response) => {
         try {
           expect(err).to.equal(null);
           const {

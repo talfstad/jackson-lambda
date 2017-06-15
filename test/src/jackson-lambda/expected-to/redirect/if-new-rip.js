@@ -10,7 +10,7 @@ import lambda from '../../../../../src';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
-    const event = {
+    const validEvent = {
       path: '/jquery/dist',
       httpMethod: 'GET',
       headers: {
@@ -33,10 +33,10 @@ describe('Jackson Lambda', () => {
 
     before((done) => {
       redisDao = new RedisDao({
-        config: new Config({ stageVariables: event.stageVariables }).redisDaoConfig(),
+        config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
       });
       mongoDao = new MongoDao({
-        config: new Config({ stageVariables: event.stageVariables }).mongoDaoConfig(),
+        config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
       });
 
       // delete rip from redis
@@ -67,7 +67,7 @@ describe('Jackson Lambda', () => {
       // when a URL doesn't exist in Redis, or in Mongo. A new rip is created
       // and saved with the url and the user is forwarded since we never
       // jack on the first hit.
-      lambda.handler(event, {}, (err, response) => {
+      lambda.handler(validEvent, {}, (err, response) => {
         try {
           expect(err).to.equal(null);
           const {
