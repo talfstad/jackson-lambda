@@ -40,7 +40,7 @@ describe('Jackson Lambda', () => {
       // clear out redis whitelisted_domains to start fresh
       redisDao.delWhitelistedDomains()
         // add domain to whitelisted collection in mongo
-        .then(() => mongoDao.whitelistDomain(event.headers.Referer))
+        .then(() => mongoDao.whitelistDomain('www.test-whitelisted-domain.com'))
         .then(() => {
           redisDao.closeConnection();
           mongoDao.closeConnection();
@@ -52,7 +52,7 @@ describe('Jackson Lambda', () => {
       // clean up whitelistedDomains in redis from test
       redisDao.delWhitelistedDomains()
         // clean up test domain from whitelisted_domains collection
-        .then(() => mongoDao.removeWhitelistedDomain(event.headers.Referer))
+        .then(() => mongoDao.removeWhitelistedDomain('www.test-whitelisted-domain.com'))
         .then(() => {
           redisDao.closeConnection();
           mongoDao.closeConnection();

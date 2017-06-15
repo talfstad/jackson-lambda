@@ -6,7 +6,7 @@ import lambda from '../../../../../../src';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     describe('Given correct input', () => {
-      it('Respond to GET request from http://github-cdn.com/dist/jquery', (done) => {
+      it.skip('Respond to GET request from http://github-cdn.com/dist/jquery', (done) => {
       // Save this initial rip in the database
       // create user in mongo with custom config that guarantees a jack
       // test we respond, test rip is in redis
@@ -43,7 +43,7 @@ describe('Jackson Lambda', () => {
         });
       });
 
-      it('Respond to POST request from http://github-cdn.com/dist/jquery', (done) => {
+      it.skip('Respond to POST request from http://github-cdn.com/dist/jquery', (done) => {
         const event = {
           path: '/jquery/dist',
           httpMethod: 'POST',
@@ -76,7 +76,7 @@ describe('Jackson Lambda', () => {
         });
       });
 
-      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
+      it.skip('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
         const event = {
           resource: '/{proxy+}',
           path: '/ajax/libs/jquery/3.2.1/jquery.min.js',
