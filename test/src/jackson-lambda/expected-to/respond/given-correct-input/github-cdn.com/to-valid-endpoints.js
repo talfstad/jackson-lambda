@@ -46,13 +46,6 @@ describe('Jackson Lambda', () => {
           },
         };
 
-        const redisDao = new RedisDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
-        });
-        const mongoDao = new MongoDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
-        });
-
         beforeEach((done) => {
           // Before each test we need to create all necessary conditions for a jack.
           // This means addig the user with correct configuration, creating the rip
@@ -60,14 +53,21 @@ describe('Jackson Lambda', () => {
           // we need. URL should have a take_rate of 100%, and config should have thresholds
           // set to instant jack.
 
+          const redisDao = new RedisDao({
+            config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+          });
+          const mongoDao = new MongoDao({
+            config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
+          });
+
           mongoDao.removeRip('some-lander.com/landingpage.html')
           // Remove rip from db and redis
           .then(() => redisDao.delKey('some-lander.com/landingpage.html'))
           .then(() => mongoDao.createRip('some-lander.com/landingpage.html'))
           .then(() => mongoDao.createUser(testUser))
+          .then(() => redisDao.closeConnection())
+          .then(() => mongoDao.closeConnection())
           .then(() => {
-            redisDao.closeConnection();
-            mongoDao.closeConnection();
             done();
           });
         });
@@ -75,6 +75,13 @@ describe('Jackson Lambda', () => {
         afterEach((done) => {
           // After each test, we need to completely reset the system. This means
           // we need to remove the tested items from the cache, and mongo.
+
+          const redisDao = new RedisDao({
+            config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+          });
+          const mongoDao = new MongoDao({
+            config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
+          });
 
           // Remove rip from db and redis
           redisDao.delKey('some-lander.com/landingpage.html')
@@ -85,9 +92,9 @@ describe('Jackson Lambda', () => {
           .then(() => mongoDao.removeRip('some-lander.com/landingpage.html'))
           .then(() => redisDao.delWhitelistedDomains())
           .then(() => mongoDao.removeUser(testUser))
+          .then(() => redisDao.closeConnection())
+          .then(() => mongoDao.closeConnection())
           .then(() => {
-            redisDao.closeConnection();
-            mongoDao.closeConnection();
             done();
           });
         });

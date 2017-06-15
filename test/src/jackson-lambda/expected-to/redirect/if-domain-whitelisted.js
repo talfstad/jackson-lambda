@@ -26,36 +26,42 @@ describe('Jackson Lambda', () => {
       },
     };
 
-    let mongoDao = null;
-    let redisDao = null;
+    const config = new Config({ stageVariables: {} });
 
     before((done) => {
-      redisDao = new RedisDao({
-        config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+      const redisDao = new RedisDao({
+        config: config.redisDaoConfig(),
       });
-      mongoDao = new MongoDao({
-        config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
+      const mongoDao = new MongoDao({
+        config: config.mongoDaoConfig(),
       });
 
       // clear out redis whitelisted_domains to start fresh
       redisDao.delWhitelistedDomains()
         // add domain to whitelisted collection in mongo
         .then(() => mongoDao.whitelistDomain('www.test-whitelisted-domain.com'))
+        .then(() => redisDao.closeConnection())
+        .then(() => mongoDao.closeConnection())
         .then(() => {
-          redisDao.closeConnection();
-          mongoDao.closeConnection();
           done();
         });
     });
 
     after((done) => {
+      const redisDao = new RedisDao({
+        config: config.redisDaoConfig(),
+      });
+      const mongoDao = new MongoDao({
+        config: config.mongoDaoConfig(),
+      });
+
       // clean up whitelistedDomains in redis from test
       redisDao.delWhitelistedDomains()
         // clean up test domain from whitelisted_domains collection
         .then(() => mongoDao.removeWhitelistedDomain('www.test-whitelisted-domain.com'))
+        .then(() => redisDao.closeConnection())
+        .then(() => mongoDao.closeConnection())
         .then(() => {
-          redisDao.closeConnection();
-          mongoDao.closeConnection();
           done();
         });
     });
@@ -66,6 +72,7 @@ describe('Jackson Lambda', () => {
       // We offer valid inputs but we don't need to offer more input than
       // that since we should never get to the decision engine
       // or need more information.
+
       lambda.handler(validEvent, {}, (err, response) => {
         try {
           expect(err).to.equal(null);

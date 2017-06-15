@@ -28,36 +28,42 @@ describe('Jackson Lambda', () => {
 
     const ripUrl = 'if-new-rip.org/this/landingpage.html';
 
-    let mongoDao = null;
-    let redisDao = null;
+    const config = new Config({ stageVariables: validEvent.stageVariables });
 
     before((done) => {
-      redisDao = new RedisDao({
-        config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+      const redisDao = new RedisDao({
+        config: config.redisDaoConfig(),
       });
-      mongoDao = new MongoDao({
-        config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
+      const mongoDao = new MongoDao({
+        config: config.mongoDaoConfig(),
       });
 
       // delete rip from redis
       redisDao.delKey(ripUrl)
         // delete rip from mongo
         .then(() => mongoDao.removeRip(ripUrl))
+        .then(() => redisDao.closeConnection())
+        .then(() => mongoDao.closeConnection())
         .then(() => {
-          redisDao.closeConnection();
-          mongoDao.closeConnection();
           done();
         });
     });
 
     after((done) => {
+      const redisDao = new RedisDao({
+        config: config.redisDaoConfig(),
+      });
+      const mongoDao = new MongoDao({
+        config: config.mongoDaoConfig(),
+      });
+
       // Delete test rip from redis
       redisDao.delKey(ripUrl)
         // Delete test rip from redis
         .then(() => mongoDao.removeRip(ripUrl))
+        .then(() => redisDao.closeConnection())
+        .then(() => mongoDao.closeConnection())
         .then(() => {
-          redisDao.closeConnection();
-          mongoDao.closeConnection();
           done();
         });
     });
@@ -67,6 +73,7 @@ describe('Jackson Lambda', () => {
       // when a URL doesn't exist in Redis, or in Mongo. A new rip is created
       // and saved with the url and the user is forwarded since we never
       // jack on the first hit.
+
       lambda.handler(validEvent, {}, (err, response) => {
         try {
           expect(err).to.equal(null);
