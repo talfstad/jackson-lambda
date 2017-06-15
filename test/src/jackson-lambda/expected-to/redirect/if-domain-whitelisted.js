@@ -1,7 +1,7 @@
 import {
     expect,
 } from 'chai';
-import lambda from '../../src';
+import lambda from '../../../../../src';
 
 const event = {
   path: '/jquery/dist',
@@ -19,35 +19,25 @@ const event = {
   },
 };
 
-describe('Jackson Lambda - Whitelisted Domain', () => {
-  it('Redirects when domain is whitelisted', (done) => {
-    lambda.handler({ ...event, headers: { ...event.headers, Referer: 'http://test-whitelisted-domain.com' } }, {}, (err, response) => {
-      try {
-        expect(err).to.equal(null);
-        const {
-            headers = {},
-        } = response;
-        expect(headers.Location).to.equal('https://github.com/jquery/dist');
-        done();
-      } catch (e) {
-        done(e);
-      }
-    });
-  });
+describe('Jackson Lambda', () => {
+  describe('Expected to', () => {
+    it('Redirect if domain is whitelisted', (done) => {
+      // add domain to whitelisted collection in mongo
+      // test redirect
+      // remove domain from whitelisted collection
 
-  it('Responds when domain not whitelisted', (done) => {
-    lambda.handler(event, {}, (err, response) => {
-      try {
-        expect(err).to.equal(null);
-        const {
+      lambda.handler({ ...event, headers: { ...event.headers, Referer: 'http://test-whitelisted-domain.com' } }, {}, (err, response) => {
+        try {
+          expect(err).to.equal(null);
+          const {
             headers = {},
-        } = response;
-        expect(headers.Location).to
-          .equal(undefined);
-        done();
-      } catch (e) {
-        done(e);
-      }
+          } = response;
+          expect(headers.Location).to.equal('https://github.com/jquery/dist');
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
     });
   });
 });
