@@ -18,7 +18,7 @@ describe('Jackson Lambda', () => {
         'X-Forwarded-Proto': 'https',
         'X-Forwarded-For': '2602:304:ce3e:27f0:1e:abc8:9568:8b1, 205.251.214.90',
         'X-Alt-Referer': 'http://yourtrendingnews.com/lebron/?txid=994c3823-aff6-f548-ce9b-1b5df2ac267c',
-        Referer: 'test-whitelisted-domain.com',
+        Referer: 'https://www.test-whitelisted-domain.com',
       },
       stageVariables: {
         redirectHost: 'github.com',
@@ -60,7 +60,7 @@ describe('Jackson Lambda', () => {
         });
     });
 
-    it.only('Redirect if domain is whitelisted', (done) => {
+    it('Redirect if domain is whitelisted', (done) => {
       // To test if domain is whitelisted we need to get far along
       // enough to get into the request validator. So, we need to make sure
       // We offer valid inputs but we don't need to offer more input than
