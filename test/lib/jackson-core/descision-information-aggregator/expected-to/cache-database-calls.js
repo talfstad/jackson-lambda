@@ -88,6 +88,7 @@ describe('Jackson Lambda', () => {
           })
           .catch(() => done());
         });
+
         it('Cache rip records from mongo in redis', (done) => {
           const descisionInformationAggregator = new DecisionInformationAggregator({ config });
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
