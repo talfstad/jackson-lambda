@@ -74,6 +74,11 @@ describe('Jackson Lambda', () => {
         isBase64Encoded: false,
       };
 
+      const rip = {
+        url: 'some-lander.com/landingpage.html',
+        geo: { country: 'US' },
+      };
+
       before((done) => {
         // Before each test we need to create all necessary conditions for a jack.
         // This means addig the user with correct configuration, creating the rip
@@ -89,11 +94,11 @@ describe('Jackson Lambda', () => {
         });
 
         // Remove rip from mongo
-        mongoDao.removeRip('some-lander.com/landingpage.html')
+        mongoDao.removeRip(rip.url)
           // remove rip from redis
-          .then(() => redisDao.delKey('some-lander.com/landingpage.html'))
+          .then(() => redisDao.delKey(rip.url))
           // create rip in mongo
-          .then(() => mongoDao.createRip('some-lander.com/landingpage.html'))
+          .then(() => mongoDao.createRip(rip))
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
           .then(() => {
@@ -112,15 +117,15 @@ describe('Jackson Lambda', () => {
           config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
         });
 
-        redisDao.delKey('some-lander.com/landingpage.html')
+        redisDao.delKey(rip.url)
           // delete config from redis for jake's user
           .then(() => redisDao.delKey('5940a8e8b5cabc3836c14781'))
           // delete rip from redis
-          .then(() => redisDao.delKey('some-lander.com/landingpage.html'))
+          .then(() => redisDao.delKey(rip.url))
           // delete whitelistedDomains from redis
           .then(() => redisDao.delWhitelistedDomains())
           // delete the rip from mongo
-          .then(() => mongoDao.removeRip('some-lander.com/landingpage.html'))
+          .then(() => mongoDao.removeRip(rip.url))
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
           .then(() => {

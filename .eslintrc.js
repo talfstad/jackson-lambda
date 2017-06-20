@@ -12,6 +12,7 @@ module.exports = {
   'rules': {
     'import/no-extraneous-dependencies': ['error', {'devDependencies': true, 'optionalDependencies': false, 'peerDependencies': false}],
     'no-underscore-dangle': 'off',
+    'camelcase': 'off',
   },
   'parser': 'babel-eslint',
 };

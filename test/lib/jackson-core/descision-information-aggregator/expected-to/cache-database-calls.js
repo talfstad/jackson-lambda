@@ -14,9 +14,10 @@ describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('Decision Information Aggregator', () => {
       describe('Expected to', () => {
-        // DecisionInformationAggregator only uses the UUID and URL
+        // DecisionInformationAggregator only uses the UUID and URL and GEO
         const uuid = '554c3354-aff6-f548-1234-1b5df2ac267c';
         const url = 'http://somelandingpagedomain.com/some-landing-page.html';
+        const geo = { country: 'US' };
 
         const testUser = {
           _id: '6240a8e8b5cabc3836c14593',
@@ -60,7 +61,7 @@ describe('Jackson Lambda', () => {
           // to use to get config by UUID
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
-          mongoDao.createRip(url)
+          mongoDao.createRip({ url, uuid, geo })
           .then(() => mongoDao.createUser(testUser))
           .then(() => mongoDao.closeConnection())
           .then(() => {
@@ -93,7 +94,7 @@ describe('Jackson Lambda', () => {
           const descisionInformationAggregator = new DecisionInformationAggregator({ config });
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
-          descisionInformationAggregator.aggregate({ url, uuid })
+          descisionInformationAggregator.aggregate({ url, uuid, geo })
             .then(() => {
               // expect rip to be in redis now
               redisDao.getRip(url)
@@ -116,7 +117,7 @@ describe('Jackson Lambda', () => {
           const descisionInformationAggregator = new DecisionInformationAggregator({ config });
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
-          descisionInformationAggregator.aggregate({ url, uuid })
+          descisionInformationAggregator.aggregate({ url, uuid, geo })
             .then(() => {
               // expect config to be in mongo
               redisDao.getUserConfig(testUser._id)
