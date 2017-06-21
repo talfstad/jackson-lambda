@@ -23,7 +23,7 @@ exports.handler = (event, context, callback) => {
     .then((requestParams) => {
       new JacksonCore({ stageVariables }).processRequest(requestParams)
         .then((err, templateValues) => {
-          if (err) throw new Error('Jackson Lambda: Not Jacking, forwarding response');
+          if (err) throw new Error(err);
           callback(null, ResponseGenerator.templateResponse({
             ...templateValues,
             template: 'jquery',
