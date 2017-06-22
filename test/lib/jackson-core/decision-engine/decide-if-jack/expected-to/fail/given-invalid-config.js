@@ -1,11 +1,15 @@
 import _ from 'lodash';
 import DecisionEngine from '../../../../../../../lib/jackson-core/lib/decision-engine';
+import Config from '../../../../../../../lib/jackson-core/config';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('DecisionEngine', () => {
       describe('decideIfTake', () => {
         describe('Expected to', () => {
+          const config = Config({ stageVariables: {} });
+
           // Will take 100% by default. no conditions are met
           const decisionInformation = {
             userConfig: {
@@ -42,7 +46,8 @@ describe('Jackson Lambda', () => {
           };
 
           it('Fail if redirect rate 0', (done) => {
-            new DecisionEngine().decideIfTake({
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake({
               ...decisionInformation,
               updatedRipRecord: {
                 ...decisionInformation.updatedRipRecord,
@@ -56,7 +61,8 @@ describe('Jackson Lambda', () => {
           });
 
           it('Fail if threshold for consecutive traffic per min not met', (done) => {
-            new DecisionEngine().decideIfTake({
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake({
               ...decisionInformation,
               updatedRipRecord: {
                 ...decisionInformation.updatedRipRecord,
@@ -70,7 +76,8 @@ describe('Jackson Lambda', () => {
           });
 
           it('Fail if threshold for daily hits not met', (done) => {
-            new DecisionEngine().decideIfTake({
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake({
               ...decisionInformation,
               userConfig: {
                 ...decisionInformation.userConfig,
@@ -84,7 +91,8 @@ describe('Jackson Lambda', () => {
           });
 
           it('Fail if no valid offer URL', (done) => {
-            new DecisionEngine().decideIfTake(_.omit(decisionInformation, 'updatedRipRecord.offer.url'))
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(_.omit(decisionInformation, 'updatedRipRecord.offer.url'))
               .then(() => {
                 done(new Error('Failed to recognize incorrect inputs'));
               })

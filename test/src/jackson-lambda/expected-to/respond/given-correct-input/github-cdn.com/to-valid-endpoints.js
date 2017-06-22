@@ -1,3 +1,4 @@
+import moment from 'moment';
 import _ from 'lodash';
 import {
     expect,
@@ -47,12 +48,29 @@ describe('Jackson Lambda', () => {
           },
         };
 
+        // This rip needs to match the userConfig for testUser so that it will always rip
+        const hour = moment().format('H');
+        const geo = { country: 'US' };
         const rip = {
           url: 'some-lander.com/landingpage.html',
-          uuid: testUserId,
+          take_rate: 1,
+          offer: {
+            _id: 'offer-id',
+            url: 'http://testurl.com',
+          },
+          hits_per_min: 15,
+          consecutive_min_traffic: 5,
+          archive: {
+            hourly: [
+              {
+                hour,
+                hits: [
+                  { cc: geo.country, hits: 100 },
+                ],
+              },
+            ],
+          },
         };
-
-        const geo = { country: 'US' };
 
         beforeEach((done) => {
           // Before each test we need to create all necessary conditions for a jack.

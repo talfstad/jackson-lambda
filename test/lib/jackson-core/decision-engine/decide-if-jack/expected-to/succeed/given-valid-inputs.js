@@ -1,6 +1,7 @@
 import DecisionEngine from '../../../../../../../lib/jackson-core/lib/decision-engine';
 import RedisDao from '../../../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Config from '../../../../../../../lib/jackson-core/config';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
@@ -56,7 +57,9 @@ describe('Jackson Lambda', () => {
           });
 
           it('Take if all expected conditions are met (100%)', (done) => {
-            new DecisionEngine().decideIfTake(decisionInformation)
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(decisionInformation)
+              .then(() => db.closeConnection())
               .then(() => {
                 done();
               })

@@ -3,6 +3,7 @@ import {
 } from 'chai';
 
 import Config from '../../../../../lib/jackson-core/config';
+import Dao from '../../../../../lib/jackson-core/lib/dao';
 
 // Used for test set up tear down
 import MongoDao from '../../../../../lib/jackson-core/lib/dao/mongo-dao';
@@ -28,8 +29,8 @@ describe('Jackson Lambda', () => {
 
           mongoDao.removeRip(url)
           .then(() => redisDao.delKey(url))
-          .then(() => mongoDao.closeConnection())
           .then(() => redisDao.closeConnection())
+          .then(() => mongoDao.closeConnection())
           .then(() => {
             done();
           });
@@ -47,8 +48,7 @@ describe('Jackson Lambda', () => {
           .then(() => mongoDao.closeConnection())
           .then(() => {
             done();
-          })
-          .catch(() => done());
+          });
         });
 
         it('Create a new rip record if not exist and save it to mongo', (done) => {
@@ -58,7 +58,10 @@ describe('Jackson Lambda', () => {
           // we pass UUID but don't take the time to create a testUser in the DB. It should
           // fail before that.
 
-          const descisionInformationAggregator = new DecisionInformationAggregator({ config });
+          const db = new Dao({ config });
+          const descisionInformationAggregator =
+            new DecisionInformationAggregator({ db });
+
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
           descisionInformationAggregator.aggregate({ url, uuid })
@@ -67,20 +70,20 @@ describe('Jackson Lambda', () => {
             })
             .catch(() => {
               // expect rip to be in mongo now
-              mongoDao.getRip(url)
+              db.closeConnection()
+                .then(() => mongoDao.getRip(url))
                 .then((ripFromMongo) => {
-                  mongoDao.closeConnection()
-                    .then(() => {
-                      try {
+                  try {
+                    mongoDao.closeConnection()
+                      .then(() => {
                         expect(ripFromMongo).to.not.equal(undefined);
                         done();
-                      } catch (err) {
-                        done(err);
-                      }
-                    })
-                    .catch(err => done(err));
+                      });
+                  } catch (err) {
+                    done(err);
+                  }
                 })
-                .catch(e => done(e));
+              .catch(err => done(err));
             });
         });
       });

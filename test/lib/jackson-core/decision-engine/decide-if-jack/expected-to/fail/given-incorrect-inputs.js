@@ -1,11 +1,15 @@
 import _ from 'lodash';
 import DecisionEngine from '../../../../../../../lib/jackson-core/lib/decision-engine';
+import Config from '../../../../../../../lib/jackson-core/config';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('DecisionEngine', () => {
       describe('decideIfTake', () => {
         describe('Expected to', () => {
+          const config = Config({ stageVariables: {} });
+
           const decisionInformation = {
             userConfig: {
               last_updated: new Date(),
@@ -25,7 +29,8 @@ describe('Jackson Lambda', () => {
           };
 
           it('Fail if not given inputs object with userConfig key', (done) => {
-            new DecisionEngine().decideIfTake(_.omit(decisionInformation, 'userConfig'))
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(_.omit(decisionInformation, 'userConfig'))
               .then(() => {
                 done(new Error('Failed to recognize incorrect inputs'));
               })
@@ -33,7 +38,8 @@ describe('Jackson Lambda', () => {
           });
 
           it('Fail if not given inputs object with requestInputs key', (done) => {
-            new DecisionEngine().decideIfTake(_.omit(decisionInformation, 'requestInputs'))
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(_.omit(decisionInformation, 'requestInputs'))
               .then(() => {
                 done(new Error('Failed to recognize incorrect inputs'));
               })
@@ -41,7 +47,8 @@ describe('Jackson Lambda', () => {
           });
 
           it('Fail if not given inputs object with updatedRipRecord key', (done) => {
-            new DecisionEngine().decideIfTake(_.omit(decisionInformation, 'updatedRipRecord'))
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(_.omit(decisionInformation, 'updatedRipRecord'))
               .then(() => {
                 done(new Error('Failed to recognize incorrect inputs'));
               })

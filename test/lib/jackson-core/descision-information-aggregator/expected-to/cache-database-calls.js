@@ -3,6 +3,7 @@ import {
 } from 'chai';
 
 import Config from '../../../../../lib/jackson-core/config';
+import Dao from '../../../../../lib/jackson-core/lib/dao';
 
 // Used for test set up tear down
 import MongoDao from '../../../../../lib/jackson-core/lib/dao/mongo-dao';
@@ -91,7 +92,9 @@ describe('Jackson Lambda', () => {
         });
 
         it('Cache rip records from mongo in redis', (done) => {
-          const descisionInformationAggregator = new DecisionInformationAggregator({ config });
+          const db = new Dao({ config });
+          const descisionInformationAggregator =
+            new DecisionInformationAggregator({ db });
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
           descisionInformationAggregator.aggregate({ url, uuid, geo })
@@ -110,11 +113,14 @@ describe('Jackson Lambda', () => {
                     })
                     .catch(err => done(err));
                 });
-            });
+            })
+            .then(() => db.closeConnection());
         });
 
         it('Cache user configuration from mongo in redis', (done) => {
-          const descisionInformationAggregator = new DecisionInformationAggregator({ config });
+          const db = new Dao({ config });
+          const descisionInformationAggregator =
+            new DecisionInformationAggregator({ db });
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
           descisionInformationAggregator.aggregate({ url, uuid, geo })
@@ -135,7 +141,8 @@ describe('Jackson Lambda', () => {
                     .catch(err => done(err));
                 })
                 .catch(err => done(err));
-            });
+            })
+            .then(() => db.closeConnection());
         });
       });
     });

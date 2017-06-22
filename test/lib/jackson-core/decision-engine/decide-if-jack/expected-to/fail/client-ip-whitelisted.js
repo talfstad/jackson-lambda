@@ -1,6 +1,7 @@
 import DecisionEngine from '../../../../../../../lib/jackson-core/lib/decision-engine';
 import RedisDao from '../../../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Config from '../../../../../../../lib/jackson-core/config';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
@@ -56,17 +57,21 @@ describe('Jackson Lambda', () => {
           after((done) => {
             const redisDao = new RedisDao({ config: config.redisDaoConfig() });
             redisDao.delKey(ip)
+              .then(() => redisDao.closeConnection())
               .then(() => done())
               .catch(() => done(new Error('Could not tear down client whitelist test')));
           });
 
           it('Fail if client IP is whitelisted', (done) => {
-            // TODO: store client IP from request inputs. remove after test
-            new DecisionEngine().decideIfTake(decisionInformation)
+            const db = new Dao({ config });
+            new DecisionEngine({ db }).decideIfTake(decisionInformation)
               .then(() => {
                 done(new Error('Failed to recognize incorrect inputs'));
               })
-              .catch(() => done());
+              .catch(() => {
+                db.closeConnection();
+                done();
+              });
           });
         });
       });
