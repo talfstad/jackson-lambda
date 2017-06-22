@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
     expect,
 } from 'chai';
@@ -13,7 +14,7 @@ describe('Jackson Lambda', () => {
     describe('the domain cloudflare.cdnjs.io will', () => {
       const validEvent = {
         resource: '/{proxy+}',
-        path: '/ajax/libs/jquery/3.2.1/jquery.min.js',
+        path: '/ajax/libs/jquery/9.9.9/jquery.min.js',
         httpMethod: 'GET',
         headers: {
           Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -40,14 +41,14 @@ describe('Jackson Lambda', () => {
         },
         queryStringParameters: null,
         pathParameters: {
-          proxy: 'ajax/libs/jquery/3.2.1/core.js',
+          proxy: 'ajax/libs/jquery/9.9.9/core.js',
         },
         stageVariables: {
           redirectHost: 'cdnjs.cloudflare.com',
           alias: 'test',
         },
         requestContext: {
-          path: '/ajax/libs/jquery/3.2.1/core.js',
+          path: '/ajax/libs/jquery/9.9.9/core.js',
           accountId: '834835117621',
           resourceId: '265ues',
           stage: 'test',
@@ -74,9 +75,46 @@ describe('Jackson Lambda', () => {
         isBase64Encoded: false,
       };
 
+      const testUser = {
+        _id: '7840a8e8b5cabc3836c14593',
+        name: 'Test User',
+        email: 'testuser@gmail.com',
+        created_on: new Date(),
+        last_updated: new Date(),
+        uuids: [
+          // Matches test path in our mapRequestToCoreInputs test.
+          { uuid: '9.9.9' },
+        ],
+        config: {
+          last_updated: new Date(),
+          min_minutes_consecutive_traffic: 0,
+          min_daily_hits_to_take: 0,
+          min_hits_per_min_to_take: 0,
+        },
+      };
+
+      // This rip needs to match the userConfig for testUser so that it will always rip
+      const hour = moment().format('H');
+      const geo = { country: 'US' };
       const rip = {
         url: 'some-lander.com/landingpage.html',
-        geo: { country: 'US' },
+        take_rate: 1,
+        offer: {
+          _id: 'offer-id',
+          url: 'http://testurl.com',
+        },
+        hits_per_min: 15,
+        consecutive_min_traffic: 5,
+        archive: {
+          hourly: [
+            {
+              hour,
+              hits: [
+                { cc: geo.country, hits: 100 },
+              ],
+            },
+          ],
+        },
       };
 
       before((done) => {
@@ -97,8 +135,13 @@ describe('Jackson Lambda', () => {
         mongoDao.removeRip(rip.url)
           // remove rip from redis
           .then(() => redisDao.delKey(rip.url))
+          // delete config from redis for testUser
+          .then(() => redisDao.delKey(testUser._id))
+          // create user in mongo
+          .then(() => mongoDao.removeUser(testUser))
+          .then(() => mongoDao.createUser(testUser))
           // create rip in mongo
-          .then(() => mongoDao.createRip(rip))
+          .then(() => mongoDao.createRip(rip, geo))
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
           .then(() => {
@@ -117,15 +160,16 @@ describe('Jackson Lambda', () => {
           config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
         });
 
+        // delete rip from redis
         redisDao.delKey(rip.url)
-          // delete config from redis for jake's user
-          .then(() => redisDao.delKey('5940a8e8b5cabc3836c14781'))
-          // delete rip from redis
-          .then(() => redisDao.delKey(rip.url))
-          // delete whitelistedDomains from redis
-          .then(() => redisDao.delWhitelistedDomains())
           // delete the rip from mongo
           .then(() => mongoDao.removeRip(rip.url))
+          // delete config from redis for testUser
+          .then(() => redisDao.delKey(testUser._id))
+          // remove user from mongo
+          .then(() => mongoDao.removeUser(testUser))
+          // delete whitelistedDomains from redis
+          .then(() => redisDao.delWhitelistedDomains())
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
           .then(() => {
@@ -133,11 +177,7 @@ describe('Jackson Lambda', () => {
           });
       });
 
-      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/3.2.1/jquery.min.js', (done) => {
-        // This test gets routed by jquery version which is the UUID.
-        // For example, this request's UUID is 3.2.1
-        // For this test, we will use Jake's user since is assigned UUID 3.2.1
-
+      it.only('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         lambda.handler(validEvent, {}, (err, response) => {
           try {
             expect(err).to.equal(null);

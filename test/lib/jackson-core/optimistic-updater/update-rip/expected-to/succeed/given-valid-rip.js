@@ -13,7 +13,7 @@ describe('Jackson Lambda', () => {
               last_updated: new Date(),
               min_minutes_consecutive_traffic: 3,
               min_daily_hits_to_take: 4,
-              min_traffic_per_min_to_jack: 10,
+              min_hits_per_min_to_take: 10,
             },
             inputs: {
               uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
@@ -29,7 +29,6 @@ describe('Jackson Lambda', () => {
             last_updated: new Date(),
             url: 'http://somedomain.com/somelandingpage.html',
             take_rate: 0.1,
-            last_persisted: new Date(),
             total_hits: 200,
             hits_per_min: 15,
             archive: {

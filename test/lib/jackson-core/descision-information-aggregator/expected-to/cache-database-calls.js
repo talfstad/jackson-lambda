@@ -32,7 +32,7 @@ describe('Jackson Lambda', () => {
             last_updated: new Date(),
             min_minutes_consecutive_traffic: 0,
             min_daily_hits_to_take: 0,
-            min_traffic_per_min_to_jack: 0,
+            min_hits_per_min_to_take: 0,
           },
         };
 
@@ -61,7 +61,7 @@ describe('Jackson Lambda', () => {
           // to use to get config by UUID
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
-          mongoDao.createRip({ url, uuid, geo })
+          mongoDao.createRip({ url, uuid }, geo)
           .then(() => mongoDao.createUser(testUser))
           .then(() => mongoDao.closeConnection())
           .then(() => {

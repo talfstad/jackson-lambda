@@ -29,6 +29,7 @@ describe('Jackson Lambda', () => {
           },
         };
 
+        const testUserId = '554c3823-aff6-f548-ce9b-1b5df2ac267c';
         const testUser = {
           _id: '6240a8e8b5cabc3836c14593',
           name: 'Test User',
@@ -36,20 +37,22 @@ describe('Jackson Lambda', () => {
           created_on: new Date(),
           last_updated: new Date(),
           uuids: [
-            { uuid: '554c3823-aff6-f548-ce9b-1b5df2ac267c' },
+            { uuid: testUserId },
           ],
           config: {
             last_updated: new Date(),
             min_minutes_consecutive_traffic: 0,
             min_daily_hits_to_take: 0,
-            min_traffic_per_min_to_jack: 0,
+            min_hits_per_min_to_take: 0,
           },
         };
 
         const rip = {
           url: 'some-lander.com/landingpage.html',
-          geo: { country: 'US' },
+          uuid: testUserId,
         };
+
+        const geo = { country: 'US' };
 
         beforeEach((done) => {
           // Before each test we need to create all necessary conditions for a jack.
@@ -68,7 +71,7 @@ describe('Jackson Lambda', () => {
           mongoDao.removeRip(rip.url)
           // Remove rip from db and redis
           .then(() => redisDao.delKey(rip.url))
-          .then(() => mongoDao.createRip(rip))
+          .then(() => mongoDao.createRip(rip, geo))
           .then(() => mongoDao.createUser(testUser))
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
