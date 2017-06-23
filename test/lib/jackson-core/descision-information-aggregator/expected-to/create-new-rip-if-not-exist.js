@@ -15,10 +15,10 @@ describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('Decision Information Aggregator', () => {
       describe('Expected to', () => {
-        // DecisionInformationAggregator only uses the UUID and URL
+        // DecisionInformationAggregator only uses the UUID and URL and GEO
         const uuid = '554c3354-aff6-f548-1234-1b5df2ac267c';
         const url = 'http://somelandingpagedomain.com/some-landing-page.html';
-
+        const geo = { country: 'US' };
         const config = Config({ stageVariables: {} });
 
         before((done) => {
@@ -64,7 +64,7 @@ describe('Jackson Lambda', () => {
 
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
-          descisionInformationAggregator.aggregate({ url, uuid })
+          descisionInformationAggregator.aggregate({ url, uuid, geo })
             .then(() => {
               throw new Error('Should not resolve aggregate function on new rip.');
             })
@@ -83,7 +83,7 @@ describe('Jackson Lambda', () => {
                     done(err);
                   }
                 })
-              .catch(err => done(err));
+                .catch(err => done(err));
             });
         });
       });
