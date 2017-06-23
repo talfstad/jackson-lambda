@@ -20,19 +20,13 @@ exports.handler = (event, context, callback) => {
     requestBody,
     requestHeaders,
   })
-    .then((requestParams) => {
-      new JacksonCore({ stageVariables }).processRequest(requestParams)
-        .then((err, templateValues) => {
-          if (err) throw new Error(err);
-          callback(null, ResponseGenerator.templateResponse({
-            ...templateValues,
-            template: 'jquery',
-          }));
-        })
-        .catch((err) => {
-          logger.error(err);
-          callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
-        });
+    .then(requestParams =>
+      new JacksonCore({ stageVariables }).processRequest(requestParams))
+    .then((templateValues) => {
+      callback(null, ResponseGenerator.templateResponse({
+        ...templateValues,
+        template: 'jquery',
+      }));
     })
     .catch((err) => {
       logger.error(err);
