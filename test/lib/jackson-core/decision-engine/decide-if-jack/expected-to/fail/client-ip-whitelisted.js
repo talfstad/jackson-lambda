@@ -6,7 +6,7 @@ import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('DecisionEngine', () => {
-      describe('decideIfTake', () => {
+      describe('decideIfJack', () => {
         describe('Expected to', () => {
           const config = Config({ stageVariables: {} });
 
@@ -64,13 +64,18 @@ describe('Jackson Lambda', () => {
 
           it('Fail if client IP is whitelisted', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake(decisionInformation)
-              .then(() => {
-                done(new Error('Failed to recognize incorrect inputs'));
+            new DecisionEngine({ db }).decideIfJack(decisionInformation)
+              .then((jackDecision) => {
+                if (jackDecision) {
+                  done(new Error('Failed to recognize incorrect inputs'));
+                } else {
+                  done();
+                }
               })
-              .catch(() => {
+              .then(() => db.closeConnection())
+              .catch((err) => {
                 db.closeConnection();
-                done();
+                done(err);
               });
           });
         });

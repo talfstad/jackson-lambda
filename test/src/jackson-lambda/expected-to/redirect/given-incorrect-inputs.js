@@ -7,7 +7,7 @@ import lambda from '../../../../../src';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     const validEvent = {
-      path: '/dist/jquery',
+      path: '/jquery/dist',
       httpMethod: 'GET',
       headers: {
         Host: 'cloudflare.cdnjs.io',
@@ -54,7 +54,7 @@ describe('Jackson Lambda', () => {
                 headers = {},
             } = response;
           expect(headers.Location).to
-              .equal('https://github.com/dist/jquery');
+              .equal('https://github.com/jquery/dist');
           done();
         } catch (e) {
           done(e);
@@ -75,7 +75,7 @@ describe('Jackson Lambda', () => {
           const {
               headers = {},
             } = response;
-          expect(headers.Location).to.equal('https://github.com/dist/jquery');
+          expect(headers.Location).to.equal('https://github.com/jquery/dist');
           done();
         } catch (e) {
           done(e);

@@ -6,7 +6,7 @@ import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('DecisionEngine', () => {
-      describe('decideIfTake', () => {
+      describe('decideIfJack', () => {
         describe('Expected to', () => {
           const config = Config({ stageVariables: {} });
           const ip = '2602:304:ce3e:27f0:1e:abc8:9568:8b1';
@@ -58,7 +58,7 @@ describe('Jackson Lambda', () => {
 
           it('Take if all expected conditions are met (100%)', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake(decisionInformation)
+            new DecisionEngine({ db }).decideIfJack(decisionInformation)
               .then(() => db.closeConnection())
               .then(() => {
                 done();

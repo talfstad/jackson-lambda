@@ -123,7 +123,7 @@ describe('Jackson Lambda', () => {
           });
         });
 
-        it('Respond to GET request from http://github-cdn.com/dist/jquery', (done) => {
+        it('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {
           lambda.handler(validEvent, {}, (err, response) => {
             try {
               expect(err).to.equal(null);
@@ -138,7 +138,7 @@ describe('Jackson Lambda', () => {
           });
         });
 
-        it('Respond to POST request from http://github-cdn.com/dist/jquery', (done) => {
+        it('Respond to POST request from http://github-cdn.com/jquery/dist', (done) => {
           // Only need to give a body version, no X-Alt-Referer header since this is a POST.
           lambda.handler({
             ...validEvent,

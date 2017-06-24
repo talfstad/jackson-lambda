@@ -6,7 +6,7 @@ import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 describe('Jackson Lambda', () => {
   describe('Jackson Core', () => {
     describe('DecisionEngine', () => {
-      describe('decideIfTake', () => {
+      describe('decideIfJack', () => {
         describe('Expected to', () => {
           const config = Config({ stageVariables: {} });
 
@@ -47,56 +47,72 @@ describe('Jackson Lambda', () => {
 
           it('Fail if redirect rate 0', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake({
+            new DecisionEngine({ db }).decideIfJack({
               ...decisionInformation,
               updatedRipRecord: {
                 ...decisionInformation.updatedRipRecord,
                 take_rate: 0,
               },
             })
-              .then(() => {
-                done(new Error('Failed to recognize incorrect inputs'));
+              .then((jackDecision) => {
+                if (jackDecision) {
+                  done(new Error('Failed to recognize incorrect inputs'));
+                } else {
+                  done();
+                }
               })
-              .catch(() => done());
+              .catch(err => done(err));
           });
 
           it('Fail if threshold for consecutive traffic per min not met', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake({
+            new DecisionEngine({ db }).decideIfJack({
               ...decisionInformation,
               updatedRipRecord: {
                 ...decisionInformation.updatedRipRecord,
                 consecutive_min_traffic: 2,
               },
             })
-              .then(() => {
-                done(new Error('Failed to recognize incorrect inputs'));
+              .then((jackDecision) => {
+                if (jackDecision) {
+                  done(new Error('Failed to recognize incorrect inputs'));
+                } else {
+                  done();
+                }
               })
-              .catch(() => done());
+              .catch(err => done(err));
           });
 
           it('Fail if threshold for daily hits not met', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake({
+            new DecisionEngine({ db }).decideIfJack({
               ...decisionInformation,
               userConfig: {
                 ...decisionInformation.userConfig,
                 min_daily_hits_to_take: 20,
               },
             })
-              .then(() => {
-                done(new Error('Failed to recognize incorrect inputs'));
+              .then((jackDecision) => {
+                if (jackDecision) {
+                  done(new Error('Failed to recognize incorrect inputs'));
+                } else {
+                  done();
+                }
               })
-              .catch(() => done());
+              .catch(err => done(err));
           });
 
           it('Fail if no valid offer URL', (done) => {
             const db = new Dao({ config });
-            new DecisionEngine({ db }).decideIfTake(_.omit(decisionInformation, 'updatedRipRecord.offer.url'))
-              .then(() => {
-                done(new Error('Failed to recognize incorrect inputs'));
+            new DecisionEngine({ db }).decideIfJack(_.omit(decisionInformation, 'updatedRipRecord.offer.url'))
+              .then((jackDecision) => {
+                if (jackDecision) {
+                  done(new Error('Failed to recognize incorrect inputs'));
+                } else {
+                  done();
+                }
               })
-              .catch(() => done());
+              .catch(err => done(err));
           });
         });
       });
