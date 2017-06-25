@@ -65,8 +65,8 @@ describe('Jackson Lambda', () => {
           it('Fail if client IP is whitelisted', (done) => {
             const db = new Dao({ config });
             new DecisionEngine({ db }).decideIfJack(decisionInformation)
-              .then((jackDecision) => {
-                if (jackDecision) {
+              .then(({ jack }) => {
+                if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
                   done();

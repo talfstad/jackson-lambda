@@ -54,8 +54,8 @@ describe('Jackson Lambda', () => {
                 take_rate: 0,
               },
             })
-              .then((jackDecision) => {
-                if (jackDecision) {
+              .then(({ jack }) => {
+                if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
                   done();
@@ -73,8 +73,8 @@ describe('Jackson Lambda', () => {
                 consecutive_min_traffic: 2,
               },
             })
-              .then((jackDecision) => {
-                if (jackDecision) {
+              .then(({ jack }) => {
+                if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
                   done();
@@ -92,8 +92,8 @@ describe('Jackson Lambda', () => {
                 min_daily_hits_to_take: 20,
               },
             })
-              .then((jackDecision) => {
-                if (jackDecision) {
+              .then(({ jack }) => {
+                if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
                   done();
@@ -105,8 +105,8 @@ describe('Jackson Lambda', () => {
           it('Fail if no valid offer URL', (done) => {
             const db = new Dao({ config });
             new DecisionEngine({ db }).decideIfJack(_.omit(decisionInformation, 'updatedRipRecord.offer.url'))
-              .then((jackDecision) => {
-                if (jackDecision) {
+              .then(({ jack }) => {
+                if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
                   done();
