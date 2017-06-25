@@ -85,7 +85,7 @@ describe('Jackson Lambda', () => {
 
       mongoDao.removeRip(rip.url)
           // Remove rip from db and redis
-          .then(() => redisDao.delKey(rip.url))
+          .then(() => redisDao.removeRip(rip.url))
           .then(() => mongoDao.createRip(rip, geo))
           .then(() => mongoDao.createUser(testUser))
           .then(() => redisDao.closeConnection())

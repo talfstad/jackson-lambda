@@ -161,7 +161,7 @@ describe('Jackson Lambda', () => {
         });
 
         // delete rip from redis
-        redisDao.delKey(rip.url)
+        redisDao.removeRip(rip.url)
           // delete the rip from mongo
           .then(() => mongoDao.removeRip(rip.url))
           // delete config from redis for testUser

@@ -79,7 +79,7 @@ describe('Jackson Lambda', () => {
           const redisDao = new RedisDao({ config: config.redisDaoConfig() });
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
-          redisDao.delKey(url)
+          redisDao.removeRip(url)
           .then(() => mongoDao.removeRip(url))
           .then(() => mongoDao.removeUser(testUser))
           .then(() => redisDao.delKey(testUser._id))
