@@ -27,7 +27,7 @@ describe('Jackson Lambda', () => {
       },
     };
 
-    const testUserId = '554c3823-aff6-f548-ce9b-1b5df2ac267c';
+    const testUserUUID = '554c3823-aff6-f548-ce9b-1b5df2ac267c';
     const testUser = {
       _id: '6240a8e8b5cabc3836c14593',
       name: 'Test User',
@@ -35,7 +35,7 @@ describe('Jackson Lambda', () => {
       created_on: new Date(),
       last_updated: new Date(),
       uuids: [
-            { uuid: testUserId },
+            { uuid: testUserUUID },
       ],
       config: {
         last_updated: new Date(),
@@ -55,6 +55,7 @@ describe('Jackson Lambda', () => {
         _id: 'offer-id',
         url: 'http://testurl.com',
       },
+      uuid: testUserUUID,
       hits_per_min: 15,
       consecutive_min_traffic: 5,
       archive: {

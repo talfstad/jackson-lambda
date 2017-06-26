@@ -9,18 +9,10 @@ describe('Jackson Lambda', () => {
       describe('updateRip', () => {
         describe('Expected to', () => {
           const validInputs = {
-            userConfig: {
-              last_updated: new Date(),
-              min_minutes_consecutive_traffic: 3,
-              min_daily_hits_to_take: 4,
-              min_hits_per_min_to_take: 10,
-            },
-            inputs: {
-              uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
-              ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
-              url: 'https://some-lander.com/landingpage.html',
-              geo: { country: 'US' },
-            },
+            uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
+            ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
+            url: 'https://some-lander.com/landingpage.html',
+            geo: { country: 'US' },
           };
 
           // Example rip record:
@@ -305,7 +297,7 @@ describe('Jackson Lambda', () => {
               const updatedRipKeyedByHours = _.keyBy(updatedRip.archive.hourly, 'hour');
               const updatedRipSelectedHourKeyedByCC = _.keyBy(updatedRipKeyedByHours[nowHour].hits, 'cc');
               const updatedHits =
-                updatedRipSelectedHourKeyedByCC[validInputs.inputs.geo.country].hits;
+                updatedRipSelectedHourKeyedByCC[validInputs.geo.country].hits;
 
               expect(updatedHits).to.equal(1);
               done();
@@ -324,12 +316,12 @@ describe('Jackson Lambda', () => {
               const exampleRipKeyedByHours = _.keyBy(exampleRipRecord.archive.hourly, 'hour');
               const exampleRipSelectedHourKeyedByCC = _.keyBy(exampleRipKeyedByHours[nowHour].hits, 'cc');
               const exampleHits =
-                exampleRipSelectedHourKeyedByCC[validInputs.inputs.geo.country].hits;
+                exampleRipSelectedHourKeyedByCC[validInputs.geo.country].hits;
 
               const updatedRipKeyedByHours = _.keyBy(updatedRip.archive.hourly, 'hour');
               const updatedRipSelectedHourKeyedByCC = _.keyBy(updatedRipKeyedByHours[nowHour].hits, 'cc');
               const updatedHits =
-                updatedRipSelectedHourKeyedByCC[validInputs.inputs.geo.country].hits;
+                updatedRipSelectedHourKeyedByCC[validInputs.geo.country].hits;
 
               expect(updatedHits).to.equal(exampleHits + 1);
               done();
@@ -342,11 +334,8 @@ describe('Jackson Lambda', () => {
             try {
               const updater = new OptimisticUpdater({
                 ...validInputs,
-                inputs: {
-                  ...validInputs.inputs,
-                  geo: {
-                    country: 'test-country-code',
-                  },
+                geo: {
+                  country: 'test-country-code',
                 },
               });
 

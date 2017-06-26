@@ -8,18 +8,10 @@ describe('Jackson Lambda', () => {
       describe('updateRip', () => {
         describe('Expected to', () => {
           const validInputs = {
-            userConfig: {
-              last_updated: new Date(),
-              min_minutes_consecutive_traffic: 3,
-              min_daily_hits_to_take: 4,
-              min_hits_per_min_to_take: 10,
-            },
-            inputs: {
-              uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
-              ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
-              url: 'https://some-lander.com/landingpage.html',
-              geo: { country: 'US' },
-            },
+            uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
+            ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
+            url: 'https://some-lander.com/landingpage.html',
+            geo: { country: 'US' },
           };
 
           const ripRecord = {
@@ -28,16 +20,7 @@ describe('Jackson Lambda', () => {
 
           it('Fail if not given inputs object with geo', (done) => {
             try {
-              new OptimisticUpdater({ ...validInputs, inputs: _.omit(validInputs.inputs, 'geo') }).updateRip(ripRecord);
-              assert.fail(true, false, 'Incorrectly processed ripRecord that should have failed');
-            } catch (err) {
-              done();
-            }
-          });
-
-          it('Fail if not given userConfig key in input', (done) => {
-            try {
-              new OptimisticUpdater(_.omit(validInputs, 'userConfig')).updateRip(ripRecord);
+              new OptimisticUpdater(_.omit(validInputs, 'geo')).updateRip(ripRecord);
               assert.fail(true, false, 'Incorrectly processed ripRecord that should have failed');
             } catch (err) {
               done();
