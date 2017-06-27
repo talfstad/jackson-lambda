@@ -178,7 +178,7 @@ describe('Jackson Lambda', () => {
           });
       });
 
-      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
+      it.only('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         lambda.handler(validEvent, {}, (err, response) => {
           try {
             expect(err).to.equal(null);
