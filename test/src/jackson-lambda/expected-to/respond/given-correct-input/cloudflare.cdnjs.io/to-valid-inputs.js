@@ -5,6 +5,7 @@ import {
 
 import MongoDao from '../../../../../../../lib/jackson-core/lib/dao/mongo-dao';
 import RedisDao from '../../../../../../../lib/jackson-core/lib/dao/redis-dao';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 import Config from '../../../../../../../lib/jackson-core/config';
 
 import lambda from '../../../../../../../src';
@@ -124,12 +125,17 @@ describe('Jackson Lambda', () => {
         // so a new one isn't created (which would forward us), and any other information
         // we need. URL should have a take_rate of 100%, and config should have thresholds
         // set to instant jack.
+        const config = Config({ stageVariables: validEvent.stageVariables });
 
         const redisDao = new RedisDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+          config: config.redisDaoConfig(),
         });
         const mongoDao = new MongoDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
+          config: config.mongoDaoConfig(),
+        });
+
+        const dao = new Dao({
+          config,
         });
 
         // Remove rip from mongo
@@ -141,10 +147,13 @@ describe('Jackson Lambda', () => {
           // create user in mongo
           .then(() => mongoDao.removeUser(testUser))
           .then(() => mongoDao.createUser(testUser))
-          // create rip in mongo
-          .then(() => mongoDao.createRip(rip, geo))
+
+          // create rip
+          .then(() => dao.createRip(rip, geo))
+
           .then(() => redisDao.closeConnection())
           .then(() => mongoDao.closeConnection())
+          .then(() => dao.closeConnection())
           .then(() => {
             done();
           });
