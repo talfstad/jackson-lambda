@@ -4,9 +4,8 @@ import {
     expect,
 } from 'chai';
 
-import MongoDao from '../../../../../../../lib/jackson-core/lib/dao/mongo-dao';
-import RedisDao from '../../../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Config from '../../../../../../../lib/jackson-core/config';
+import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
 import lambda from '../../../../../../../src';
 
@@ -73,55 +72,57 @@ describe('Jackson Lambda', () => {
           },
         };
 
+        const config = Config({ stageVariables: validEvent.stageVariables });
+
         beforeEach((done) => {
           // Before each test we need to create all necessary conditions for a jack.
           // This means addig the user with correct configuration, creating the rip
           // so a new one isn't created (which would forward us), and any other information
           // we need. URL should have a take_rate of 100%, and config should have thresholds
           // set to instant jack.
+          const db = new Dao({
+            config,
+          });
 
-          const redisDao = new RedisDao({
-            config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
-          });
-          const mongoDao = new MongoDao({
-            config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
-          });
+          const redisDao = db.getRedisDao();
+          const mongoDao = db.getMongoDao();
 
           mongoDao.removeRip(rip.url)
           // Remove rip from db and redis
           .then(() => redisDao.delKey(rip.url))
-          .then(() => mongoDao.createRip(rip, geo))
+          .then(() => mongoDao.removeUser(testUser))
+          .then(() => db.createRip(rip, geo))
+          // delete IP from whitelist (this is ip from request)
+          .then(() => redisDao.delKey('2602:304:ce3e:27f0:1e:abc8:9568:8b1'))
           .then(() => mongoDao.createUser(testUser))
-          .then(() => redisDao.closeConnection())
-          .then(() => mongoDao.closeConnection())
-          .then(() => {
-            done();
-          });
+          .then(() => db.closeConnection())
+          .then(() => done())
+          .catch(err => done(err));
         });
 
         afterEach((done) => {
           // After each test, we need to completely reset the system. This means
           // we need to remove the tested items from the cache, and mongo.
 
-          const redisDao = new RedisDao({
-            config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+          const db = new Dao({
+            config,
           });
-          const mongoDao = new MongoDao({
-            config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
-          });
+
+          const redisDao = db.getRedisDao();
+          const mongoDao = db.getMongoDao();
 
           // Remove rip from redis
           redisDao.removeRip(rip.url)
+          .then(() => mongoDao.removeRip(rip.url))
           // Remove config from redis
           .then(() => redisDao.delKey(testUser._id))
-          .then(() => mongoDao.removeRip(rip.url))
+          // delete IP from whitelist (this is ip from request)
+          .then(() => redisDao.delKey('2602:304:ce3e:27f0:1e:abc8:9568:8b1'))
           .then(() => redisDao.delWhitelistedDomains())
           .then(() => mongoDao.removeUser(testUser))
-          .then(() => redisDao.closeConnection())
-          .then(() => mongoDao.closeConnection())
-          .then(() => {
-            done();
-          });
+          .then(() => db.closeConnection())
+          .then(() => done())
+          .catch(err => done(err));
         });
 
         it('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {

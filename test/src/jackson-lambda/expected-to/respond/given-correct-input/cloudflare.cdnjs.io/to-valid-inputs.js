@@ -126,17 +126,12 @@ describe('Jackson Lambda', () => {
         // we need. URL should have a take_rate of 100%, and config should have thresholds
         // set to instant jack.
         const config = Config({ stageVariables: validEvent.stageVariables });
-
-        const redisDao = new RedisDao({
-          config: config.redisDaoConfig(),
-        });
-        const mongoDao = new MongoDao({
-          config: config.mongoDaoConfig(),
-        });
-
-        const dao = new Dao({
+        const db = new Dao({
           config,
         });
+
+        const redisDao = db.getRedisDao();
+        const mongoDao = db.getMongoDao();
 
         // Remove rip from mongo
         mongoDao.removeRip(rip.url)
@@ -144,19 +139,15 @@ describe('Jackson Lambda', () => {
           .then(() => redisDao.delKey(rip.url))
           // delete config from redis for testUser
           .then(() => redisDao.delKey(testUser._id))
+          // make sure IP isn't whitelisted
+          .then(() => redisDao.delKey('2602:304:ce3e:27f0:1e:abc8:9568:8b1'))
           // create user in mongo
           .then(() => mongoDao.removeUser(testUser))
           .then(() => mongoDao.createUser(testUser))
-
           // create rip
-          .then(() => dao.createRip(rip, geo))
-
-          .then(() => redisDao.closeConnection())
-          .then(() => mongoDao.closeConnection())
-          .then(() => dao.closeConnection())
-          .then(() => {
-            done();
-          });
+          .then(() => db.createRip(rip, geo))
+          .then(() => db.closeConnection())
+          .then(() => done());
       });
 
       after((done) => {
@@ -174,6 +165,8 @@ describe('Jackson Lambda', () => {
         redisDao.removeRip(rip.url)
           // delete the rip from mongo
           .then(() => mongoDao.removeRip(rip.url))
+          // delete IP from whitelist (this is ip from request)
+          .then(() => redisDao.delKey('2602:304:ce3e:27f0:1e:abc8:9568:8b1'))
           // delete config from redis for testUser
           .then(() => redisDao.delKey(testUser._id))
           // remove user from mongo
@@ -187,7 +180,7 @@ describe('Jackson Lambda', () => {
           });
       });
 
-      it.only('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
+      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         lambda.handler(validEvent, {}, (err, response) => {
           try {
             expect(err).to.equal(null);
