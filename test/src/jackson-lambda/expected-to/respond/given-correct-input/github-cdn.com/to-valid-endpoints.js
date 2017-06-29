@@ -127,16 +127,18 @@ describe('Jackson Lambda', () => {
 
         it('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {
           lambda.handler(validEvent, {}, (err, response) => {
-            try {
-              expect(err).to.equal(null);
-              const {
-                headers = {},
-              } = response;
-              expect(headers.Location).to.equal(undefined);
-              done();
-            } catch (e) {
-              done(e);
-            }
+            setTimeout(() => {
+              try {
+                expect(err).to.equal(null);
+                const {
+                  headers = {},
+                } = response;
+                expect(headers.Location).to.equal(undefined);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            }, 500);
           });
         });
 
@@ -150,16 +152,18 @@ describe('Jackson Lambda', () => {
               version: '554c3823-aff6-f548-ce9b-1b5df2ac267c',
             },
           }, {}, (err, response) => {
-            try {
-              expect(err).to.equal(null);
-              const {
-                headers = {},
-              } = response;
-              expect(headers.Location).to.equal(undefined);
-              done();
-            } catch (e) {
-              done(e);
-            }
+            setTimeout(() => {
+              try {
+                expect(err).to.equal(null);
+                const {
+                  headers = {},
+                } = response;
+                expect(headers.Location).to.equal(undefined);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            }, 500);
           });
         });
       });

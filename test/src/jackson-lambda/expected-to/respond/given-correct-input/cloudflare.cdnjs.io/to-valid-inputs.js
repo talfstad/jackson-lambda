@@ -3,8 +3,6 @@ import {
     expect,
 } from 'chai';
 
-import MongoDao from '../../../../../../../lib/jackson-core/lib/dao/mongo-dao';
-import RedisDao from '../../../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 import Config from '../../../../../../../lib/jackson-core/config';
 
@@ -118,6 +116,7 @@ describe('Jackson Lambda', () => {
           ],
         },
       };
+      const config = Config({ stageVariables: validEvent.stageVariables });
 
       before((done) => {
         // Before each test we need to create all necessary conditions for a jack.
@@ -125,7 +124,6 @@ describe('Jackson Lambda', () => {
         // so a new one isn't created (which would forward us), and any other information
         // we need. URL should have a take_rate of 100%, and config should have thresholds
         // set to instant jack.
-        const config = Config({ stageVariables: validEvent.stageVariables });
         const db = new Dao({
           config,
         });
@@ -147,19 +145,20 @@ describe('Jackson Lambda', () => {
           // create rip
           .then(() => db.createRip(rip, geo))
           .then(() => db.closeConnection())
-          .then(() => done());
+          .then(() => done())
+          .catch(err => done(err));
       });
 
       after((done) => {
         // After test, we need to completely reset the system. This means
         // we need to remove the tested items from the cache, and mongo.
 
-        const redisDao = new RedisDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).redisDaoConfig(),
+        const db = new Dao({
+          config,
         });
-        const mongoDao = new MongoDao({
-          config: new Config({ stageVariables: validEvent.stageVariables }).mongoDaoConfig(),
-        });
+
+        const redisDao = db.getRedisDao();
+        const mongoDao = db.getMongoDao();
 
         // delete rip from redis
         redisDao.removeRip(rip.url)
@@ -173,26 +172,26 @@ describe('Jackson Lambda', () => {
           .then(() => mongoDao.removeUser(testUser))
           // delete whitelistedDomains from redis
           .then(() => redisDao.delWhitelistedDomains())
-          .then(() => redisDao.closeConnection())
-          .then(() => mongoDao.closeConnection())
-          .then(() => {
-            done();
-          });
+          .then(() => db.closeConnection())
+          .then(() => done())
+          .catch(err => done(err));
       });
 
       it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         lambda.handler(validEvent, {}, (err, response) => {
-          try {
-            expect(err).to.equal(null);
-            const {
-            headers = {},
-          } = response;
-            expect(headers.Location).to
-            .equal(undefined);
-            done();
-          } catch (e) {
-            done(e);
-          }
+          setTimeout(() => {
+            try {
+              expect(err).to.equal(null);
+              const {
+                headers = {},
+              } = response;
+              expect(headers.Location).to
+              .equal(undefined);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          }, 500);
         });
       });
     });

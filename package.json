@@ -10,7 +10,7 @@
     "build": "npm run build:templates && webpack -p",
     "build:verify": "npm run test && npm run lint",
     "build:templates": "node ./scripts/build-templates.js",
-    "test": "mocha-webpack --timeout 10000 --recursive --webpack-config webpack.config.js test",
+    "test": "mocha-webpack --timeout 20000 --recursive --webpack-config webpack.config.js test",
     "test:watch": "npm run test -- --watch"
   },
   "repository": {
@@ -54,7 +54,7 @@
     "geoip-country-lite": "^1.0.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "mongoose": "4.10.2",
+    "mongoose": "4.10.8",
     "net": "^1.0.2",
     "npmlog": "^4.1.0",
     "path": "^0.12.7",
