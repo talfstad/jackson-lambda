@@ -5,10 +5,6 @@ import {
 import Config from '../../../../../lib/jackson-core/config';
 import Dao from '../../../../../lib/jackson-core/lib/dao';
 
-// Used for test set up tear down
-import MongoDao from '../../../../../lib/jackson-core/lib/dao/mongo-dao';
-import RedisDao from '../../../../../lib/jackson-core/lib/dao/redis-dao';
-
 import DecisionInformationAggregator from '../../../../../lib/jackson-core/lib/decision-information-aggregator';
 
 describe('Jackson Lambda', () => {
@@ -42,29 +38,30 @@ describe('Jackson Lambda', () => {
         before((done) => {
           // Clear out any chance of old information
           // before we start the test
-          const redisDao = new RedisDao({ config: config.redisDaoConfig() });
-          const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
+          const db = new Dao({ config });
+          const mongoDao = db.getMongoDao();
+          const redisDao = db.getRedisDao();
 
           mongoDao.removeRip(url)
-          .then(() => redisDao.delKey(url))
-          .then(() => mongoDao.removeUser(testUser))
-          .then(() => redisDao.delKey(testUser._id))
-          .then(() => mongoDao.closeConnection())
-          .then(() => redisDao.closeConnection())
-          .then(() => {
-            done();
-          });
+            .then(() => redisDao.delKey(url))
+            .then(() => mongoDao.removeUser(testUser))
+            .then(() => redisDao.delKey(testUser._id))
+            .then(() => db.closeConnection())
+            .then(() => {
+              done();
+            });
         });
 
         beforeEach((done) => {
           // Set up rip in mongo
           // create user for decision information aggregator
           // to use to get config by UUID
-          const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
+          const db = new Dao({ config });
+          const mongoDao = db.getMongoDao();
 
-          mongoDao.createRip({ url, uuid }, geo)
+          db.createRip({ url, uuid }, geo)
           .then(() => mongoDao.createUser(testUser))
-          .then(() => mongoDao.closeConnection())
+          .then(() => db.closeConnection())
           .then(() => {
             done();
           })
@@ -76,73 +73,62 @@ describe('Jackson Lambda', () => {
           // delete rip from mongo
           // delete test user from mongo
           // delete config from redis
-          const redisDao = new RedisDao({ config: config.redisDaoConfig() });
-          const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
+          const db = new Dao({ config });
+          const mongoDao = db.getMongoDao();
+          const redisDao = db.getRedisDao();
 
           redisDao.removeRip(url)
           .then(() => mongoDao.removeRip(url))
           .then(() => mongoDao.removeUser(testUser))
           .then(() => redisDao.delKey(testUser._id))
-          .then(() => redisDao.closeConnection())
-          .then(() => mongoDao.closeConnection())
-          .then(() => {
-            done();
-          })
-          .catch(() => done());
+          .then(() => db.closeConnection())
+          .then(() => done())
+          .catch(err => done(err));
         });
 
         it('Cache rip records from mongo in redis', (done) => {
           const db = new Dao({ config });
+          const redisDao = db.getRedisDao();
+
           const descisionInformationAggregator =
             new DecisionInformationAggregator({ db });
-          const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
           descisionInformationAggregator.aggregate({ url, uuid, geo })
-            .then(() => {
-              // expect rip to be in redis now
-              redisDao.getRip(url)
-                .then((ripFromRedis) => {
-                  redisDao.closeConnection()
-                    .then(() => {
-                      try {
-                        expect(ripFromRedis).to.not.equal(undefined);
-                        done();
-                      } catch (err) {
-                        done(err);
-                      }
-                    })
-                    .catch(err => done(err));
-                });
+            .then(() => redisDao.getRip(url))
+            .then((ripFromRedis) => {
+              try {
+                expect(ripFromRedis).to.not.equal(undefined);
+
+                db.closeConnection()
+                  .then(() => done());
+              } catch (err) {
+                done(err);
+              }
             })
-            .then(() => db.closeConnection());
+            .catch(err => done(err));
         });
 
         it('Cache user configuration from mongo in redis', (done) => {
           const db = new Dao({ config });
+          const redisDao = db.getRedisDao();
+
           const descisionInformationAggregator =
             new DecisionInformationAggregator({ db });
-          const redisDao = new RedisDao({ config: config.redisDaoConfig() });
 
           descisionInformationAggregator.aggregate({ url, uuid, geo })
-            .then(() => {
-              // expect config to be in mongo
-              redisDao.getUserConfig(testUser._id)
-                .then((userConfigFromRedis) => {
-                  redisDao.closeConnection()
-                    .then(() => {
-                      try {
-                        expect(userConfigFromRedis).to.not.equal(undefined);
-                        expect(Object.keys(userConfigFromRedis).length).to.not.equal(0);
-                        done();
-                      } catch (err) {
-                        done(err);
-                      }
-                    })
-                    .catch(err => done(err));
-                })
-                .catch(err => done(err));
+            .then(() => redisDao.getUserConfig(testUser._id))
+            .then((userConfigFromRedis) => {
+              try {
+                expect(userConfigFromRedis).to.not.equal(undefined);
+                expect(Object.keys(userConfigFromRedis).length).to.not.equal(0);
+
+                db.closeConnection()
+                  .then(() => done());
+              } catch (err) {
+                done(err);
+              }
             })
-            .then(() => db.closeConnection());
+            .catch(err => done(err));
         });
       });
     });
