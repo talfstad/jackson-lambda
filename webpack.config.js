@@ -37,6 +37,7 @@ module.exports = {
     'geoip-country-lite': 'geoip-country-lite',
     winston: 'winston',
     mongoose: 'mongoose',
+    mongodb: 'mongodb',
     redis: 'redis',
   },
   output: {

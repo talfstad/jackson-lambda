@@ -63,7 +63,7 @@ describe('Jackson Lambda', () => {
               .then(() => done());
           });
 
-          it.only('Not persist rip if current', (done) => {
+          it('Not persist rip if current', (done) => {
             const db = new Dao({ config });
             const mongoDao = db.getMongoDao();
 
