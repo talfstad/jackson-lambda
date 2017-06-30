@@ -11,6 +11,7 @@ import lambda from '../../../../../../../src';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     describe('the domain cloudflare.cdnjs.io will', () => {
+      const url = 'herenewsbreaks.com/foxnews/drphil/drphil-revboost.html?voluumdata=BASE64dmlkLi4wMDAwMDAwMC04YmM3LTQ3NmUtODAwMC0wMDAwMDAwMDAwMDBfX3ZwaWQuLmIyYTZhMDAwLTVkY2UtMTFlNy04M2ZkLWY1NzE4OWQ2YjQyYV9fY2FpZC4uNzA4ZDRhM2EtZThmMS00YTZlLThlMzQtNmU1YmY3NDA1OTRhX19ydC4uUl9fbGlkLi4zY2Q3ODA0NS0yYmVhLTQxZjktYTIyMy01NWZlZWY5ZTkxMWJfX29pZDEuLmQ5NmZhZmE0LTkwMGUtNGEyNC04ZTNlLWEzOWRmYjBkYjk2ZF9fdmFyMS4uW2FkXV9fdmFyMi4uUGFzdG9yYUFybGVuZU1hcmNhbm9KV19fdmFyMy4uW3RhcmdldF1fX3ZhcjQuLltnZW5kZXJdX192YXI1Li5bY29udmVyc2lvbl1fX3ZhcjYuLkRQX192YXI3Li5bYWdlXV9fdmFyOC4uc2VjcmV0aGlwaG9wXC5cY29tX192YXI5Li5bSW50ZXJlc3RzXV9fdmFyMTAuLltzdWJpZF1fX3JkLi5zZWNyZXRoaXBob3BcLlxjb21fX2FpZC4uX19hYi4uX19zaWQuLl9fY3JpLi5fX3B1Yi4uX19kaWQuLl9fZGl0Li5fX3BpZC4uX19pdC4uX192dC4uMTQ5ODg1NTM3NzExMg&ad=[ad]&account=PastoraArleneMarcanoJW&target=[target]&gender=[gender]&conversion=[conversion]&campaign=DP&age=[age]&utm_campaign=secrethiphop.com&Interest=[Interests]&subid=[subid]';
       const validEvent = {
         resource: '/{proxy+}',
         path: '/ajax/libs/jquery/9.9.9/jquery.min.js',
@@ -28,7 +29,7 @@ describe('Jackson Lambda', () => {
           'CloudFront-Viewer-Country': 'US',
           Host: 'test.cdnjs.io',
           pragma: 'no-cache',
-          Referer: 'https://some-lander.com/landingpage.html',
+          Referer: url,
           'upgrade-insecure-requests': '1',
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
           Via: '2.0 0826158c5b3316bf0a83b23783f3dc7a.cloudfront.net (CloudFront)',
@@ -92,11 +93,10 @@ describe('Jackson Lambda', () => {
         },
       };
 
-      // This rip needs to match the userConfig for testUser so that it will always rip
       const hour = moment().format('H');
       const geo = { country: 'US' };
       const rip = {
-        url: 'some-lander.com/landingpage.html',
+        url,
         take_rate: 1,
         offer: {
           _id: 'offer-id',

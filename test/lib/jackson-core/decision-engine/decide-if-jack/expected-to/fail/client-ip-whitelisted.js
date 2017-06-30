@@ -69,13 +69,13 @@ describe('Jackson Lambda', () => {
                 if (jack) {
                   done(new Error('Failed to recognize incorrect inputs'));
                 } else {
-                  done();
+                  db.closeConnection()
+                    .then(() => done());
                 }
               })
-              .then(() => db.closeConnection())
               .catch((err) => {
-                db.closeConnection();
-                done(err);
+                db.closeConnection()
+                  .then(() => done(err));
               });
           });
         });

@@ -1,9 +1,10 @@
 const redis = require('redis');
 
 const redisConfig = {
-  host: 'ec2-54-202-148-125.us-west-2.compute.amazonaws.com',
-  db: 1,
-  password: 'Wewillrockyou1986!',
+  // host: 'ec2-54-202-148-125.us-west-2.compute.amazonaws.com',
+  host: 'localhost',
+  // db: 1,
+  // password: 'Wewillrockyou1986!',
 };
 
 const redisClient = redis.createClient(redisConfig);
@@ -24,9 +25,9 @@ redisClient.keys('*', (err, keys) => {
   console.log(keys);
 });
 //
-redisClient.flushdb(() => {
-  console.log('deleted all keys');
-});
+// redisClient.flushdb(() => {
+//   console.log('deleted all keys');
+// });
 
 // results look like this: ['rip1', 'rip2', 'rip3', 'rip4']
 // we want to look like this: [nowSeconds, 'rip1', nowSeconds, 'rip2', nowSeconds, 'rip3']
@@ -105,23 +106,23 @@ redisClient.flushdb(() => {
 
 // test watch
 //
-redisClient.set('testrip.com', 'initial', (er) => {
-  console.log('ok dude');
-  console.log(er);
-  redisClient.watch('testrip.com', (errr) => {
-    console.log('yup now');
-    console.log(errr);
-    redisClient.set('testrip.com', 'changed', (err) => {
-      console.log('changed');
-      console.log(err);
-
-      const multi = redisClient.multi();
-      multi.set('testrip.com', 'shouldnt work');
-      multi.exec((e, replies) => {
-        console.log('final ->');
-        console.log(e);
-        console.log(replies); // IF THIS IS NULL THEN WE FAILED. If it is [ 'OK' ] success
-      });
-    });
-  });
-});
+// redisClient.set('testrip.com', 'initial', (er) => {
+//   console.log('ok dude');
+//   console.log(er);
+//   redisClient.watch('testrip.com', (errr) => {
+//     console.log('yup now');
+//     console.log(errr);
+//     redisClient.set('testrip.com', 'changed', (err) => {
+//       console.log('changed');
+//       console.log(err);
+//
+//       const multi = redisClient.multi();
+//       multi.set('testrip.com', 'shouldnt work');
+//       multi.exec((e, replies) => {
+//         console.log('final ->');
+//         console.log(e);
+//         console.log(replies); // IF THIS IS NULL THEN WE FAILED. If it is [ 'OK' ] success
+//       });
+//     });
+//   });
+// });

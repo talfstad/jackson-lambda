@@ -5,6 +5,8 @@ import JacksonCore from '../lib/jackson-core';
 import { logLevel as configLogLevel } from '../config';
 
 exports.handler = (event, context, callback) => {
+  logger.silly(JSON.stringify(event));
+
   const requestPath = event.path;
   const { stageVariables } = event;
   const requestMethod = event.httpMethod;
