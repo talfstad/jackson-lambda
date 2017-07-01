@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Find more information on Jackson Lambda here: https://github.com/Buildcave/jackson-lambda",
   "scripts": {
-    "deploy:ci": "npm run build:verify && node ./scripts/deploy-ci.js",
+    "deploy:ci": "node ./scripts/deploy-ci.js",
     "prepush": "npm run build:verify && npm run build",
     "commitmsg": "validate-commit-msg $GIT_PARAMS",
     "lint": "eslint .",
