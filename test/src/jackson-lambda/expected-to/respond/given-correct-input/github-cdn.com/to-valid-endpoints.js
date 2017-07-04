@@ -7,7 +7,7 @@ import {
 import Config from '../../../../../../../lib/jackson-core/config';
 import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 
-import lambda from '../../../../../../../src';
+import Runner from '../../../../../../../src/runner';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -126,51 +126,67 @@ describe('Jackson Lambda', () => {
         });
 
         it('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {
-          lambda.handler(validEvent, {}, (err, response) => {
-            setTimeout(() => {
-              try {
-                expect(err).to.equal(null);
-                const {
-                  headers = {},
-                } = response;
-                expect(headers.Location).to.equal(undefined);
-                done();
-              } catch (e) {
-                done(e);
-              }
-            }, 500);
+          const db = new Dao({ config });
+
+          Runner.run({
+            db,
+            event: validEvent,
+            context: {},
+            callback: (err, response) => {
+              setTimeout(() => {
+                try {
+                  expect(err).to.equal(null);
+                  const {
+                    headers = {},
+                  } = response;
+                  expect(headers.Location).to.equal(undefined);
+                  db.closeConnection()
+                    .then(() => done());
+                } catch (e) {
+                  done(e);
+                }
+              }, 500);
+            },
           });
         });
 
         it('Respond to POST request from http://github-cdn.com/jquery/dist', (done) => {
+          const db = new Dao({ config });
           // Only need to give a body version, no X-Alt-Referer header since this is a POST.
-          lambda.handler({
+          const event = {
             ...validEvent,
             headers: _.omit(validEvent.headers, ['X-Alt-Referer']),
             httpMethod: 'POST',
             body: {
               version: '554c3823-aff6-f548-ce9b-1b5df2ac267c',
             },
-          }, {}, (err, response) => {
-            setTimeout(() => {
-              try {
-                expect(err).to.equal(null);
-                const {
-                  headers = {},
-                } = response;
-                expect(headers.Location).to.equal(undefined);
-                done();
-              } catch (e) {
-                done(e);
-              }
-            }, 500);
+          };
+
+          Runner.run({
+            db,
+            event,
+            context: {},
+            callback: (err, response) => {
+              setTimeout(() => {
+                try {
+                  expect(err).to.equal(null);
+                  const {
+                    headers = {},
+                  } = response;
+                  expect(headers.Location).to.equal(undefined);
+                  db.closeConnection()
+                    .then(() => done());
+                } catch (e) {
+                  done(e);
+                }
+              }, 500);
+            },
           });
         });
       });
     });
   });
 });
-
 
 // Example Input
 // {

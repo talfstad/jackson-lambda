@@ -3,10 +3,9 @@ import {
     expect,
 } from 'chai';
 
+import Runner from '../../../../../src/runner';
 import Dao from '../../../../../lib/jackson-core/lib/dao';
 import Config from '../../../../../lib/jackson-core/config';
-
-import lambda from '../../../../../src';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -111,20 +110,28 @@ describe('Jackson Lambda', () => {
     });
 
     it('Redirect when take_rate is 0 and everything else is valid', (done) => {
-      lambda.handler(validEvent, {}, (err, response) => {
-        setTimeout(() => {
-          try {
-            expect(err).to.equal(null);
-            const {
-                  headers = {},
-              } = response;
-            expect(headers.Location).to
-                .equal('https://github.com/jquery/dist');
-            done();
-          } catch (e) {
-            done(e);
-          }
-        }, 500);
+      const db = new Dao({ config });
+
+      Runner.run({
+        db,
+        event: validEvent,
+        context: {},
+        callback: (err, response) => {
+          setTimeout(() => {
+            try {
+              expect(err).to.equal(null);
+              const {
+                    headers = {},
+                } = response;
+              expect(headers.Location).to
+                  .equal('https://github.com/jquery/dist');
+              db.closeConnection()
+                .then(() => done());
+            } catch (e) {
+              done(e);
+            }
+          }, 500);
+        },
       });
     });
   });

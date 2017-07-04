@@ -2,11 +2,9 @@ import {
     expect,
 } from 'chai';
 
-import MongoDao from '../../../../../lib/jackson-core/lib/dao/mongo-dao';
-import RedisDao from '../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Config from '../../../../../lib/jackson-core/config';
-
-import lambda from '../../../../../src';
+import Dao from '../../../../../lib/jackson-core/lib/dao';
+import Runner from '../../../../../src/runner';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -29,38 +27,31 @@ describe('Jackson Lambda', () => {
     const config = new Config({ stageVariables: {} });
 
     before((done) => {
-      const redisDao = new RedisDao({
-        config: config.redisDaoConfig(),
-      });
-      const mongoDao = new MongoDao({
-        config: config.mongoDaoConfig(),
-      });
+      const db = new Dao({ config });
+      const redisDao = db.getRedisDao();
+      const mongoDao = db.getMongoDao();
 
       // clear out redis whitelisted_domains to start fresh
       redisDao.delWhitelistedDomains()
         // add domain to whitelisted collection in mongo
         .then(() => mongoDao.whitelistDomain('www.test-whitelisted-domain.com'))
-        .then(() => redisDao.closeConnection())
-        .then(() => mongoDao.closeConnection())
+        .then(() => db.closeConnection())
         .then(() => {
           done();
         });
     });
 
     after((done) => {
-      const redisDao = new RedisDao({
-        config: config.redisDaoConfig(),
-      });
-      const mongoDao = new MongoDao({
-        config: config.mongoDaoConfig(),
-      });
+      const db = new Dao({ config });
+      const redisDao = db.getRedisDao();
+      const mongoDao = db.getMongoDao();
+
 
       // clean up whitelistedDomains in redis from test
       redisDao.delWhitelistedDomains()
         // clean up test domain from whitelisted_domains collection
         .then(() => mongoDao.removeWhitelistedDomain('www.test-whitelisted-domain.com'))
-        .then(() => redisDao.closeConnection())
-        .then(() => mongoDao.closeConnection())
+        .then(() => db.closeConnection())
         .then(() => {
           done();
         });
@@ -72,18 +63,25 @@ describe('Jackson Lambda', () => {
       // We offer valid inputs but we don't need to offer more input than
       // that since we should never get to the decision engine
       // or need more information.
+      const db = new Dao({ config });
 
-      lambda.handler(validEvent, {}, (err, response) => {
-        try {
-          expect(err).to.equal(null);
-          const {
-            headers = {},
-          } = response;
-          expect(headers.Location).to.equal('https://github.com/jquery/dist');
-          done();
-        } catch (e) {
-          done(e);
-        }
+      Runner.run({
+        db,
+        event: validEvent,
+        context: {},
+        callback: (err, response) => {
+          try {
+            expect(err).to.equal(null);
+            const {
+              headers = {},
+            } = response;
+            expect(headers.Location).to.equal('https://github.com/jquery/dist');
+            db.closeConnection()
+              .then(() => done());
+          } catch (e) {
+            done(e);
+          }
+        },
       });
     });
   });

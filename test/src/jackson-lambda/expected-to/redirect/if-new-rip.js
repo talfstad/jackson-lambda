@@ -2,11 +2,10 @@ import {
     expect,
 } from 'chai';
 
-import MongoDao from '../../../../../lib/jackson-core/lib/dao/mongo-dao';
-import RedisDao from '../../../../../lib/jackson-core/lib/dao/redis-dao';
 import Config from '../../../../../lib/jackson-core/config';
+import Dao from '../../../../../lib/jackson-core/lib/dao';
 
-import lambda from '../../../../../src';
+import Runner from '../../../../../src/runner';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -31,38 +30,30 @@ describe('Jackson Lambda', () => {
     const config = new Config({ stageVariables: validEvent.stageVariables });
 
     before((done) => {
-      const redisDao = new RedisDao({
-        config: config.redisDaoConfig(),
-      });
-      const mongoDao = new MongoDao({
-        config: config.mongoDaoConfig(),
-      });
+      const db = new Dao({ config });
+      const redisDao = db.getRedisDao();
+      const mongoDao = db.getMongoDao();
 
       // delete rip from redis
       redisDao.delKey(ripUrl)
         // delete rip from mongo
         .then(() => mongoDao.removeRip(ripUrl))
-        .then(() => redisDao.closeConnection())
-        .then(() => mongoDao.closeConnection())
+        .then(() => db.closeConnection())
         .then(() => {
           done();
         });
     });
 
     after((done) => {
-      const redisDao = new RedisDao({
-        config: config.redisDaoConfig(),
-      });
-      const mongoDao = new MongoDao({
-        config: config.mongoDaoConfig(),
-      });
+      const db = new Dao({ config });
+      const redisDao = db.getRedisDao();
+      const mongoDao = db.getMongoDao();
 
       // Delete test rip from redis
       redisDao.delKey(ripUrl)
         // Delete test rip from redis
         .then(() => mongoDao.removeRip(ripUrl))
-        .then(() => redisDao.closeConnection())
-        .then(() => mongoDao.closeConnection())
+        .then(() => db.closeConnection())
         .then(() => {
           done();
         });
@@ -73,18 +64,26 @@ describe('Jackson Lambda', () => {
       // when a URL doesn't exist in Redis, or in Mongo. A new rip is created
       // and saved with the url and the user is forwarded since we never
       // jack on the first hit.
+      const db = new Dao({ config });
 
-      lambda.handler(validEvent, {}, (err, response) => {
-        try {
-          expect(err).to.equal(null);
-          const {
-            headers = {},
-          } = response;
-          expect(headers.Location).to.equal('https://github.com/jquery/dist');
-          done();
-        } catch (e) {
-          done(e);
-        }
+      Runner.run({
+        db,
+        event: validEvent,
+        context: {},
+        callback: (err, response) => {
+          try {
+            expect(err).to.equal(null);
+            const {
+              headers = {},
+            } = response;
+            expect(headers.Location).to.equal('https://github.com/jquery/dist');
+
+            db.closeConnection()
+              .then(() => done());
+          } catch (e) {
+            done(e);
+          }
+        },
       });
     });
   });

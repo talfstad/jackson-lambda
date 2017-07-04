@@ -2,7 +2,9 @@ import _ from 'lodash';
 import {
     expect,
 } from 'chai';
-import lambda from '../../../../../src';
+import Runner from '../../../../../src/runner';
+import Config from '../../../../../lib/jackson-core/config';
+import Dao from '../../../../../lib/jackson-core/lib/dao';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -21,65 +23,98 @@ describe('Jackson Lambda', () => {
         alias: 'test',
       },
     };
+    const config = Config({ stageVariables: {} });
 
     it('Redirect if invalid URL path', (done) => {
       // Redirection happens in the request-validator where we check inputs. We don't need
       // any more setup because it should fail right away.
+      const db = new Dao({ config });
 
-      lambda.handler({
+      const event = {
         ...validEvent,
         path: '/path/to/test',
-      }, {}, (err, response) => {
-        try {
-          expect(err).to.equal(null);
-          expect(response.headers.Location).to.equal('https://github.com/path/to/test');
-          done();
-        } catch (e) {
-          done(e);
-        }
+      };
+
+      const context = {};
+
+      Runner.run({
+        db,
+        event,
+        context,
+        callback: (err, response) => {
+          try {
+            expect(err).to.equal(null);
+            expect(response.headers.Location).to.equal('https://github.com/path/to/test');
+            db.closeConnection()
+              .then(() => done());
+          } catch (e) {
+            done(e);
+          }
+        },
       });
     });
 
     it('Redirect if no Referrer key in header', (done) => {
       // Redirection happens in the request-validator where we check inputs. We don't need
       // any more setup because it should fail right away.
+      const db = new Dao({ config });
 
-      lambda.handler({
+      const event = {
         ...validEvent,
         headers: _.omit(validEvent.headers, ['Referer']),
-      }, {}, (err, response) => {
-        try {
-          expect(err).to.equal(null);
-          const {
-                headers = {},
+      };
+
+      const context = {};
+
+      Runner.run({
+        event,
+        context,
+        callback: (err, response) => {
+          try {
+            expect(err).to.equal(null);
+            const {
+              headers = {},
             } = response;
-          expect(headers.Location).to
-              .equal('https://github.com/jquery/dist');
-          done();
-        } catch (e) {
-          done(e);
-        }
+
+            expect(headers.Location).to
+                .equal('https://github.com/jquery/dist');
+
+            db.closeConnection()
+              .then(() => done());
+          } catch (e) {
+            done(e);
+          }
+        },
       });
     });
 
     it('Redirect if no X-Alt-Referer header', (done) => {
       // Redirection happens in the request-validator where we check inputs. We don't need
       // any more setup because it should fail right away.
+      const db = new Dao({ config });
 
-      lambda.handler({
+      const event = {
         ...validEvent,
         headers: _.omit(validEvent.headers, ['X-Alt-Referer']),
-      }, {}, (err, response) => {
-        try {
-          expect(err).to.equal(null);
-          const {
-              headers = {},
-            } = response;
-          expect(headers.Location).to.equal('https://github.com/jquery/dist');
-          done();
-        } catch (e) {
-          done(e);
-        }
+      };
+      const context = {};
+
+      Runner.run({
+        event,
+        context,
+        callback: (err, response) => {
+          try {
+            expect(err).to.equal(null);
+            const {
+                headers = {},
+              } = response;
+            expect(headers.Location).to.equal('https://github.com/jquery/dist');
+            db.closeConnection()
+              .then(() => done());
+          } catch (e) {
+            done(e);
+          }
+        },
       });
     });
   });

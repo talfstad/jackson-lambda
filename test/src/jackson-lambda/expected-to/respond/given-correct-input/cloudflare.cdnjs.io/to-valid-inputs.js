@@ -6,7 +6,7 @@ import {
 import Dao from '../../../../../../../lib/jackson-core/lib/dao';
 import Config from '../../../../../../../lib/jackson-core/config';
 
-import lambda from '../../../../../../../src';
+import Runner from '../../../../../../../src/runner';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -178,20 +178,28 @@ describe('Jackson Lambda', () => {
       });
 
       it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
-        lambda.handler(validEvent, {}, (err, response) => {
-          setTimeout(() => {
-            try {
-              expect(err).to.equal(null);
-              const {
-                headers = {},
-              } = response;
-              expect(headers.Location).to
-              .equal(undefined);
-              done();
-            } catch (e) {
-              done(e);
-            }
-          }, 500);
+        const db = new Dao({ config });
+
+        Runner.run({
+          db,
+          event: validEvent,
+          context: {},
+          callback: (err, response) => {
+            setTimeout(() => {
+              try {
+                expect(err).to.equal(null);
+                const {
+                  headers = {},
+                } = response;
+                expect(headers.Location).to
+                .equal(undefined);
+                db.closeConnection()
+                  .then(() => done());
+              } catch (e) {
+                done(e);
+              }
+            }, 500);
+          },
         });
       });
     });
