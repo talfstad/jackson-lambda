@@ -35,7 +35,6 @@ module.exports = {
   target: 'node',
   externals: {
     'geoip-country-lite': 'geoip-country-lite',
-    winston: 'winston',
     mongoose: 'mongoose',
     mongodb: 'mongodb',
     redis: 'redis',

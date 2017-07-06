@@ -125,7 +125,7 @@ describe('Jackson Lambda', () => {
           .catch(err => done(err));
         });
 
-        it('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {
+        it.skip('Respond to GET request from http://github-cdn.com/jquery/dist', (done) => {
           const db = new Dao({ config });
 
           Runner.run({
@@ -150,7 +150,7 @@ describe('Jackson Lambda', () => {
           });
         });
 
-        it('Respond to POST request from http://github-cdn.com/jquery/dist', (done) => {
+        it.skip('Respond to POST request from http://github-cdn.com/jquery/dist', (done) => {
           const db = new Dao({ config });
           // Only need to give a body version, no X-Alt-Referer header since this is a POST.
           const event = {
