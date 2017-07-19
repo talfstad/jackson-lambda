@@ -24,7 +24,7 @@ describe('Jackson Lambda', () => {
             Referer: 'https://some-lander.com/landingpage.html',
           },
           stageVariables: {
-            redirectHost: 'github.com',
+            redirectHost: 'cdnjs.cloudflare.com',
             alias: 'test',
           },
         };

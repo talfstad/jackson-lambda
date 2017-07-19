@@ -19,7 +19,7 @@ describe('Jackson Lambda', () => {
         Referer: 'https://www.test-whitelisted-domain.com',
       },
       stageVariables: {
-        redirectHost: 'github.com',
+        redirectHost: 'cdnjs.cloudflare.com',
         alias: 'test',
       },
     };
@@ -72,10 +72,8 @@ describe('Jackson Lambda', () => {
         callback: (err, response) => {
           try {
             expect(err).to.equal(null);
-            const {
-              headers = {},
-            } = response;
-            expect(headers.Location).to.equal('https://github.com/jquery/dist');
+            // This redirect URL is mapped in responseGenerator via config. It is copied from there!
+            expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
             db.closeConnection()
               .then(() => done());
           } catch (e) {
