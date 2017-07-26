@@ -13,10 +13,6 @@ describe('Jackson Lambda', () => {
         const rip = {
           uuid: '124124-fjief3f9j3f-f31j9f39-31fjifj3',
           take_rate: 0,
-          offer: {
-            _id: 'offer-ifd',
-            url: 'http://testurl.com',
-          },
           hits_per_min: 15,
           consecutive_min_traffic: 5,
           archive: {
