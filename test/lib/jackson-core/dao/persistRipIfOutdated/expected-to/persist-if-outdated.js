@@ -14,7 +14,7 @@ describe('Jackson Lambda', () => {
 
           const rip = {
             _id: '5955df0e2822631ad0f44919',
-            uuid: '554c3823-aff6-f548-ce9b-1b5df2ac267c',
+            uuid: '3.2.1',
             url: 'testrip.com',
             take_rate: 0.3,
             offer: {

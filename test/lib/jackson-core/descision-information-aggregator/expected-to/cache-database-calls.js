@@ -12,7 +12,7 @@ describe('Jackson Lambda', () => {
     describe('Decision Information Aggregator', () => {
       describe('Expected to', () => {
         // DecisionInformationAggregator only uses the UUID and URL and GEO
-        const uuid = '554c3354-aff6-f548-1234-1b5df2ac267c';
+        const uuid = '3.2.1';
         const url = 'http://somelandingpagedomain.com/some-landing-page.html';
         const geo = { country: 'US' };
 
