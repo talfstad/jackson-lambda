@@ -55,7 +55,15 @@ describe('Jackson Lambda', () => {
               db.updateRipInRedisWithRetry({
                 updatedRipRecord: { ...updatedRipRecord, trev: 'hottie' },
                 jackDecision: true,
-                optimisticUpdater: new OptimisticUpdater({ geo: { country: 'US' } }),
+                optimisticUpdater: new OptimisticUpdater({
+                  userConfig: {
+                    last_updated: new Date(),
+                    min_minutes_consecutive_traffic: 0,
+                    min_daily_hits_to_take: 0,
+                    min_hits_per_min_to_take: 0,
+                  },
+                  geo: { country: 'US' },
+                }),
               })
               .then(() => db.closeConnection())
               .then(() => done())

@@ -26,11 +26,13 @@ describe('Jackson Lambda', () => {
               geo: { country: 'US' },
             },
             updatedRipRecord: {
-              take_rate: 0.3,
+              take_rate: 1,
               offer: {
                 _id: 'offer-id',
                 url: 'http://testurl.com',
               },
+              daily_hits: 10,
+              daily_jacks: 0,
               hits_per_min: 15,
               consecutive_min_traffic: 5,
               archive: {
@@ -59,10 +61,11 @@ describe('Jackson Lambda', () => {
           it('Take if all expected conditions are met (100%)', (done) => {
             const db = new Dao({ config });
             new DecisionEngine({ db }).decideIfJack(decisionInformation)
-              .then(() => db.closeConnection())
-              .then(() => {
-                done();
+              .then(({ jack }) => {
+                if (jack) done();
+                else done(new Error('Should have jacked and did not'));
               })
+              .then(() => db.closeConnection())
               .catch(err => done(err));
           });
         });
