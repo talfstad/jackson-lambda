@@ -20,6 +20,7 @@ describe('Jackson Lambda', () => {
         const url = 'http://somelandingpagedomain.com/some-landing-page.html';
         const geo = { country: 'US' };
         const config = Config({ stageVariables: {} });
+        const host = 'testhost.com';
 
         before((done) => {
           // delete rip from mongo
@@ -64,7 +65,7 @@ describe('Jackson Lambda', () => {
 
           const mongoDao = new MongoDao({ config: config.mongoDaoConfig() });
 
-          descisionInformationAggregator.aggregate({ url, uuid, geo })
+          descisionInformationAggregator.aggregate({ url, uuid, geo, host })
             .then(() => {
               throw new Error('Should not resolve aggregate function on new rip.');
             })

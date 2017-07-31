@@ -23,6 +23,9 @@ describe('Jackson Lambda', () => {
             },
             hits_per_min: 25,
             consecutive_min_traffic: 5,
+            daily_hits: 100,
+            daily_jacks: 0,
+            host: 'test.cdnjs.io',
             archive: {
               hourly: [
                 {

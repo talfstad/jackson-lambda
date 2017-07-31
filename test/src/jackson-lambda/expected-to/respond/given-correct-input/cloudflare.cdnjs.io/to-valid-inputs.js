@@ -105,6 +105,9 @@ describe('Jackson Lambda', () => {
         uuid: '9.9.9',
         hits_per_min: 15,
         consecutive_min_traffic: 5,
+        daily_hits: 100,
+        daily_jacks: 0,
+        host: 'test.cdnjs.io',
         archive: {
           hourly: [
             {
@@ -179,7 +182,6 @@ describe('Jackson Lambda', () => {
 
       it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         const db = new Dao({ config });
-
         Runner.run({
           db,
           event: validEvent,

@@ -18,6 +18,7 @@ describe('Jackson Lambda', () => {
               min_hits_per_min_to_take: 10,
             },
             requestInputs: {
+              host: 'testhost.com',
               uuid: '994c3823-aff6-f548-ce9b-1b5df2ac267c',
               ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
               url: 'https://some-lander.com/landingpage.html',
