@@ -32,7 +32,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 10,
                     },
                   ],
                 },
@@ -42,7 +41,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 10,
                     },
                   ],
                 },
@@ -52,7 +50,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 10,
                     },
                   ],
                 },
@@ -62,7 +59,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -72,7 +68,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -82,7 +77,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -92,7 +86,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -102,7 +95,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -112,7 +104,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -122,7 +113,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -132,7 +122,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -142,7 +131,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -152,7 +140,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 4,
                     },
                   ],
                 },
@@ -162,7 +149,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -172,7 +158,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 10,
                     },
                   ],
                 },
@@ -182,7 +167,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -192,7 +176,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -202,7 +185,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -212,7 +194,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -222,7 +203,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -232,7 +212,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -242,7 +221,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -252,7 +230,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 0,
                     },
                   ],
                 },
@@ -262,7 +239,6 @@ describe('Jackson Lambda', () => {
                     {
                       cc,
                       hits: 200,
-                      jacks: 10,
                     },
                   ],
                 },
@@ -280,7 +256,7 @@ describe('Jackson Lambda', () => {
               const hourToChangeHitsKeyedByCC = _.keyBy(hourToChange.hits, 'cc');
               const ccToAddJackTo = hourToChangeHitsKeyedByCC[cc];
 
-              const oldJacks = ccToAddJackTo.jacks;
+              const oldJacks = ccToAddJackTo.jacks || 0;
 
               const updater = new OptimisticUpdater(validInputs);
               const updatedRecord = updater.incrementJacks(exampleRipRecord);
