@@ -54,6 +54,8 @@ describe('Jackson Lambda', () => {
         url: 'http://testurl.com',
       },
       uuid: testUserUUID,
+      domain: 'testdomain.com',
+      originalUrl: 'http://testhost.com',
       hits_per_min: 15,
       consecutive_min_traffic: 5,
       daily_hits: 100,

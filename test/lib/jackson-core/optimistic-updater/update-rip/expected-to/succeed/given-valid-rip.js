@@ -13,6 +13,8 @@ describe('Jackson Lambda', () => {
             ip: '2602:304:ce3e:27f0:1e:abc8:9568:8b1',
             url: 'https://some-lander.com/landingpage.html',
             geo: { country: 'US' },
+            domain: 'testhost.com',
+            originalUrl: 'http://testhost.com',
             userConfig: {
               last_updated: new Date(),
               min_minutes_consecutive_traffic: 0,
@@ -29,6 +31,8 @@ describe('Jackson Lambda', () => {
             take_rate: 0.1,
             total_hits: 200,
             hits_per_min: 15,
+            domain: 'testhost.com',
+            originalUrl: 'http://testhost.com',
             archive: {
               daily: [
                 {

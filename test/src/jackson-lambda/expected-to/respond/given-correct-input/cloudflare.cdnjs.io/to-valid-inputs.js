@@ -11,7 +11,7 @@ import Runner from '../../../../../../../src/runner';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     describe('the domain cloudflare.cdnjs.io will', () => {
-      const url = 'anotherdomain.com/testlander3.html';
+      const url = 'http://anotherdomain.com/testlander3.html';
       const validEvent = {
         resource: '/{proxy+}',
         path: '/ajax/libs/jquery/9.9.9/jquery.min.js',
@@ -96,18 +96,19 @@ describe('Jackson Lambda', () => {
       const hour = moment().format('H');
       const geo = { country: 'US' };
       const rip = {
-        url,
+        url: 'anotherdomain.com/testlander3.html',
         take_rate: 1,
         offer: {
           _id: 'offer-id',
           url: 'http://testurl.com',
         },
+        domain: 'testdomain.com',
+        originalUrl: 'http://testhost.com',
         uuid: '9.9.9',
         hits_per_min: 15,
         consecutive_min_traffic: 5,
         daily_hits: 100,
         daily_jacks: 0,
-        host: 'test.cdnjs.io',
         archive: {
           hourly: [
             {

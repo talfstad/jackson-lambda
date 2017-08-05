@@ -60,7 +60,12 @@ describe('Jackson Lambda', () => {
           const db = new Dao({ config });
           const mongoDao = db.getMongoDao();
 
-          db.createRip({ url, uuid, host }, geo)
+          db.createRip({
+            url,
+            uuid,
+            domain: host,
+            originalUrl: host,
+          }, geo)
           .then(() => mongoDao.createUser(testUser))
           .then(() => db.closeConnection())
           .then(() => {
@@ -94,7 +99,13 @@ describe('Jackson Lambda', () => {
           const descisionInformationAggregator =
             new DecisionInformationAggregator({ db });
 
-          descisionInformationAggregator.aggregate({ url, uuid, geo, host })
+          descisionInformationAggregator.aggregate({
+            url,
+            uuid,
+            geo,
+            domain: host,
+            originalUrl: host,
+          })
             .then(() => redisDao.getRip(url))
             .then((ripFromRedis) => {
               try {
@@ -116,7 +127,13 @@ describe('Jackson Lambda', () => {
           const descisionInformationAggregator =
             new DecisionInformationAggregator({ db });
 
-          descisionInformationAggregator.aggregate({ url, uuid, geo, host })
+          descisionInformationAggregator.aggregate({
+            url,
+            uuid,
+            geo,
+            domain: host,
+            originalUrl: host,
+          })
             .then(() => redisDao.getUserConfig(testUser._id))
             .then((userConfigFromRedis) => {
               try {

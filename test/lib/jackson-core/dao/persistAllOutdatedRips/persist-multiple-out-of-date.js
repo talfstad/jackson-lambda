@@ -21,6 +21,8 @@ describe('Jackson Lambda', () => {
               _id: 'offer-id',
               url: 'http://testurl.com',
             },
+            domain: 'testdomain.com',
+            originalUrl: 'http://testhost.com',
             hits_per_min: 25,
             consecutive_min_traffic: 5,
             daily_hits: 100,

@@ -17,6 +17,8 @@ describe('Jackson Lambda', () => {
             uuid: '3.2.1',
             url: 'testrip.com',
             take_rate: 0.3,
+            domain: 'testdomain.com',
+            originalUrl: 'http://testhost.com',
             offer: {
               _id: 'offer-id',
               url: 'http://testurl.com',
