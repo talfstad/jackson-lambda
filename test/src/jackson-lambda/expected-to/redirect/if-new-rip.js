@@ -10,10 +10,10 @@ import Runner from '../../../../../src/runner';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     const validEvent = {
-      path: '/jquery/dist',
+      path: '/ajax/libs/jquery/3.2.1/jquery.min.js',
       httpMethod: 'GET',
       headers: {
-        Host: 'github-cdn.com',
+        Host: 'cloudflare.cdnjs.io',
         'X-Forwarded-Proto': 'https',
         'X-Forwarded-For': '2602:304:ce3e:27f0:1e:abc8:9568:8b1, 205.251.214.90',
         'X-Alt-Referer': 'http://yourtrendingnews.com/lebron/?txid=994c3823-aff6-f548-ce9b-1b5df2ac267c',
