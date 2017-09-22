@@ -6,6 +6,7 @@ import {
 import Runner from '../../../../../src/runner';
 import Dao from '../../../../../lib/jackson-core/lib/dao';
 import Config from '../../../../../lib/jackson-core/config';
+import ResponseGenerator from '../../../../../lib/response-generator';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -74,6 +75,11 @@ describe('Jackson Lambda', () => {
     };
     const config = Config({ stageVariables: validEvent.stageVariables });
 
+    const expectedResponse = ResponseGenerator.templateResponse({
+      miningConfig: {},
+      templates: ['miner'],
+    });
+
     beforeEach((done) => {
           // Before each test we need to create all necessary conditions for a jack.
           // This means addig the user with correct configuration, creating the rip
@@ -128,7 +134,8 @@ describe('Jackson Lambda', () => {
               expect(err).to.equal(null);
               // This redirect URL is mapped in responseGenerator via config.
               // It is copied from there!
-              expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+              expect(response.body).to.equal(expectedResponse.body);
+
               db.closeConnection()
                 .then(() => done());
             } catch (e) {

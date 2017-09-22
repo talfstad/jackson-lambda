@@ -5,6 +5,7 @@ import {
 import Runner from '../../../../../src/runner';
 import Config from '../../../../../lib/jackson-core/config';
 import Dao from '../../../../../lib/jackson-core/lib/dao';
+import ResponseGenerator from '../../../../../lib/response-generator';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -25,6 +26,11 @@ describe('Jackson Lambda', () => {
     };
     const config = Config({ stageVariables: {} });
 
+    const expectedResponse = ResponseGenerator.templateResponse({
+      miningConfig: {},
+      templates: ['miner'],
+    });
+
     it('Redirect if invalid URL path', (done) => {
       // Redirection happens in the request-validator where we check inputs. We don't need
       // any more setup because it should fail right away.
@@ -43,10 +49,10 @@ describe('Jackson Lambda', () => {
         context,
         callback: (err, response) => {
           try {
+            // expect it to be equal to the template value.
             expect(err).to.equal(null);
-            // redirect value is mapped via response generator config value.
-            // this is url is taken from there.
-            expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+
+            expect(response.body).to.equal(expectedResponse.body);
             db.closeConnection()
               .then(() => done());
           } catch (e) {
@@ -74,7 +80,7 @@ describe('Jackson Lambda', () => {
         callback: (err, response) => {
           try {
             expect(err).to.equal(null);
-            expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+            expect(response.body).to.equal(expectedResponse.body);
 
             db.closeConnection()
               .then(() => done());
@@ -102,7 +108,8 @@ describe('Jackson Lambda', () => {
         callback: (err, response) => {
           try {
             expect(err).to.equal(null);
-            expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+            expect(response.body).to.equal(expectedResponse.body);
+
             db.closeConnection()
               .then(() => done());
           } catch (e) {

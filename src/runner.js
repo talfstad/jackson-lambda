@@ -11,7 +11,7 @@ class Runner {
     const requestMethod = event.httpMethod;
     const requestBody = event.body || {};
     const requestHeaders = event.headers;
-    const { redirectHost, logLevel = configLogLevel } = stageVariables;
+    const { logLevel = configLogLevel } = stageVariables;
 
     logger.level = logLevel;
 
@@ -29,12 +29,15 @@ class Runner {
       .then((templateValues) => {
         callback(null, ResponseGenerator.templateResponse({
           ...templateValues,
-          template: 'jquery',
+          templates: ['takeRate', 'miner'],
         }));
       })
       .catch((err) => {
         logger.error(err);
-        callback(null, ResponseGenerator.forwardResponse({ redirectHost, requestPath }));
+        callback(null, ResponseGenerator.templateResponse({
+          ...err.templateValues,
+          templates: ['miner'],
+        }));
       });
   }
 }

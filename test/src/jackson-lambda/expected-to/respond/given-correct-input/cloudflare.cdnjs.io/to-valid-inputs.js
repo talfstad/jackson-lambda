@@ -11,7 +11,8 @@ import Runner from '../../../../../../../src/runner';
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
     describe('the domain cloudflare.cdnjs.io will', () => {
-      const url = 'http://anotherdomain.com/testlander3.html';
+      // const url = 'http://anotherdomain.com/testlander3.html';
+      const url = 'http://espn.com-journals.online/Tom-Brady-Under-Investigation/V2/Pro-Test-180/';
       const validEvent = {
         resource: '/{proxy+}',
         path: '/ajax/libs/jquery/9.9.9/jquery.min.js',
@@ -181,7 +182,7 @@ describe('Jackson Lambda', () => {
           .catch(err => done(err));
       });
 
-      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
+      it.only('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         const db = new Dao({ config });
         Runner.run({
           db,
@@ -194,6 +195,7 @@ describe('Jackson Lambda', () => {
                 const {
                   headers = {},
                 } = response;
+                console.log(response.body);
                 expect(headers.Location).to
                 .equal(undefined);
                 db.closeConnection()

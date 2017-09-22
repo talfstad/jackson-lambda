@@ -1,5 +1,8 @@
 {
   "accessKeyId": "AKIAIFVDURFECWQX7HUQ",
   "secretAccessKey": "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",
-  "region": "us-east-1"
+  "region": "us-east-1",
+  "httpOptions": {
+    "timeout": 920000
+  }
 }

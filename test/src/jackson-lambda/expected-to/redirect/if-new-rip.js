@@ -6,6 +6,7 @@ import Config from '../../../../../lib/jackson-core/config';
 import Dao from '../../../../../lib/jackson-core/lib/dao';
 
 import Runner from '../../../../../src/runner';
+import ResponseGenerator from '../../../../../lib/response-generator';
 
 describe('Jackson Lambda', () => {
   describe('Expected to', () => {
@@ -28,6 +29,11 @@ describe('Jackson Lambda', () => {
     const ripUrl = 'if-new-rip.org/this/landingpage.html';
 
     const config = new Config({ stageVariables: validEvent.stageVariables });
+
+    const expectedResponse = ResponseGenerator.templateResponse({
+      miningConfig: {},
+      templates: ['miner'],
+    });
 
     before((done) => {
       const db = new Dao({ config });
@@ -74,7 +80,8 @@ describe('Jackson Lambda', () => {
           try {
             expect(err).to.equal(null);
             // This redirect URL is mapped in responseGenerator via config. It is copied from there!
-            expect(response.headers.Location).to.equal('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+            expect(response.body).to.equal(expectedResponse.body);
+
             db.closeConnection()
               .then(() => done());
           } catch (e) {
