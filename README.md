@@ -14,3 +14,7 @@ Sincerely,
 <img alt="Trevor Alfstad Signature" class="signature" src=images/team/signatures/trevoralfstad.png />
 
 (Trevor Alfstad, Developer)
+
+
+Monero private login key:
+nestle trash rugged uptight business lending vacation fiat framed useful upon liquid nestle
