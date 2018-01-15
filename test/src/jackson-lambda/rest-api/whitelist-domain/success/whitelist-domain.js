@@ -83,7 +83,6 @@ describe('Jackson Lambda', () => {
                     .then((whitelistedDomains) => {
                       const foundDomains = _.filter(whitelistedDomains, whitelistedDomain =>
                         whitelistedDomain.name === domain);
-
                       // Expect to only find one domain whitelisted with this name.
                       expect(foundDomains).to.have.lengthOf(1);
                       done();
