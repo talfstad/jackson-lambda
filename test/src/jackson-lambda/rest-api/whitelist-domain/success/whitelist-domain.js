@@ -25,9 +25,9 @@ describe('Jackson Lambda', () => {
             redirectHost: 'cdnjs.cloudflare.com',
             alias: 'test',
           },
-          body: {
+          body: (JSON.stringify({
             domain,
-          },
+          })),
         };
 
         const config = Config({ stageVariables: validEvent.stageVariables });
@@ -78,7 +78,6 @@ describe('Jackson Lambda', () => {
             callback: () => {
               setTimeout(() => {
                 try {
-                  // TODO: verify domain is actually whitelisted in db
                   mongoDao.getWhitelistedDomains()
                     .then((whitelistedDomains) => {
                       const foundDomains = _.filter(whitelistedDomains, whitelistedDomain =>
@@ -103,15 +102,14 @@ describe('Jackson Lambda', () => {
             db,
             event: {
               ...validEvent,
-              body: {
+              body: (JSON.stringify({
                 domain: `http://${domain}`,
-              },
+              })),
             },
             context: {},
             callback: () => {
               setTimeout(() => {
                 try {
-                  // TODO: verify domain is actually whitelisted in db
                   mongoDao.getWhitelistedDomains()
                     .then((whitelistedDomains) => {
                       const foundDomains = _.filter(whitelistedDomains, whitelistedDomain =>
