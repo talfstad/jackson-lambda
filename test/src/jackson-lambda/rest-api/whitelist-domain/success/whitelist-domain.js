@@ -14,7 +14,7 @@ describe('Jackson Lambda', () => {
       describe('a valid request will whitelist input domain', () => {
         const domain = 'www.testdomaintowhitelistthroughrestendpoint.com';
         const validEvent = {
-          path: '/api/whitelist-domain',
+          path: '/api/whitelist',
           httpMethod: 'POST',
           headers: {
             Host: 'github-cdn.com',
