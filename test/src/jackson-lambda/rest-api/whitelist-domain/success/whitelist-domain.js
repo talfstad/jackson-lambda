@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import {
     expect,
+    assert,
 } from 'chai';
 
 import Config from '../../../../../../lib/jackson-core/config';
 import Dao from '../../../../../../lib/jackson-core/lib/dao';
-
 import Runner from '../../../../../../src/runner';
 
 describe('Jackson Lambda', () => {
@@ -47,12 +47,47 @@ describe('Jackson Lambda', () => {
           .catch(err => reject(err));
         });
 
+        const testRip = {
+          url: `${domain}/lander1.html`,
+          uuid: 'a2ba5696-a37a-4d19-a266-96fd54517244', // has to map to a real user
+          domain,
+          originalUrl: `${domain}/lander1.html&volumedata=123123`,
+        };
+        const geo = {
+          country: 'US',
+        };
+
+        const addTestRip = () => new Promise((resolve, reject) => {
+          const db = new Dao({
+            config,
+          });
+          const mongoDao = db.getMongoDao();
+
+          mongoDao.createRip(testRip, geo)
+            .then(() => db.closeConnection())
+            .then(() => resolve())
+            .catch(err => reject(err));
+        });
+
+        const removeTestRip = () => new Promise((resolve, reject) => {
+          const db = new Dao({
+            config,
+          });
+          const mongoDao = db.getMongoDao();
+
+          mongoDao.removeRip(testRip.url)
+            .then(() => db.closeConnection())
+            .then(() => resolve())
+            .catch(err => reject(err));
+        });
+
         // Test Prep:
         // 1. Remove the current domain if it is already whitelisted from:
         //   a. mongodb
         //   b. redis
         beforeEach((done) => {
           removeWhitelistedDomain()
+            .then(() => addTestRip())
             .then(() => done())
             .catch(err => done(err));
         });
@@ -63,6 +98,7 @@ describe('Jackson Lambda', () => {
         //   b. redis
         afterEach((done) => {
           removeWhitelistedDomain()
+            .then(() => removeTestRip())
             .then(() => done())
             .catch(err => done(err));
         });
@@ -85,6 +121,37 @@ describe('Jackson Lambda', () => {
                       // Expect to only find one domain whitelisted with this name.
                       expect(foundDomains).to.have.lengthOf(1);
                       done();
+                    });
+                } catch (e) {
+                  done(e);
+                }
+              }, 500);
+            },
+          });
+        });
+
+        it('Whitelist domain also whitelists 1 rip if it has same domain', (done) => {
+          const db = new Dao({ config });
+          const mongoDao = db.getMongoDao();
+
+          Runner.run({
+            db,
+            event: validEvent,
+            context: {},
+            callback: () => {
+              setTimeout(() => {
+                try {
+                  mongoDao.getWhitelistedDomains()
+                    .then(() => {
+                      // Expect that our rip is now whitelisted as well
+                      mongoDao.getRip(testRip.url)
+                        .then((rip) => {
+                          assert.isTrue(rip.whitelisted);
+                          done();
+                        })
+                        .catch((err) => {
+                          done(err);
+                        });
                     });
                 } catch (e) {
                   done(e);
