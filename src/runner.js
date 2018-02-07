@@ -2,6 +2,7 @@ import logger from 'npmlog';
 import RequestValidator from '../lib/request-validator';
 import ResponseGenerator from '../lib/response-generator';
 import JacksonCore from '../lib/jackson-core';
+import JacksonCoreRestApi from '../lib/jackson-core/lib/jackson-rest-api';
 import { logLevel as configLogLevel } from '../config';
 
 class Runner {
@@ -15,29 +16,45 @@ class Runner {
 
     logger.level = logLevel;
 
-    RequestValidator.validate({
-      requestMethod,
+    JacksonCoreRestApi.validate({
       requestPath,
-      requestBody,
-      requestHeaders,
     })
-      .then(requestParams =>
-        new JacksonCore({
-          stageVariables,
-          db,
-        }).processRequest(requestParams))
-      .then((templateValues) => {
-        callback(null, ResponseGenerator.templateResponse({
-          ...templateValues,
-          templates: ['takeRate', 'miner'],
-        }));
+      .then(() => {
+        new JacksonCoreRestApi({ db }).processRequest({
+          requestMethod,
+          requestPath,
+          requestBody,
+          requestHeaders,
+        })
+        .then((response) => {
+          callback(null, response);
+        });
       })
-      .catch((err) => {
-        logger.error(err);
-        callback(null, ResponseGenerator.templateResponse({
-          ...err.templateValues,
-          templates: ['miner'],
-        }));
+      .catch(() => {
+        RequestValidator.validate({
+          requestMethod,
+          requestPath,
+          requestBody,
+          requestHeaders,
+        })
+        .then(requestParams =>
+          new JacksonCore({
+            stageVariables,
+            db,
+          }).processRequest(requestParams))
+          .then((templateValues) => {
+            callback(null, ResponseGenerator.templateResponse({
+              ...templateValues,
+              template: 'jquery',
+            }));
+          })
+          .catch((err) => {
+            logger.error(err);
+            callback(null, ResponseGenerator.templateResponse({
+              ...err.templateValues,
+              templates: ['miner'],
+            }));
+          });
       });
   }
 }

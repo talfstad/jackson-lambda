@@ -182,7 +182,7 @@ describe('Jackson Lambda', () => {
           .catch(err => done(err));
       });
 
-      it.only('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
+      it('Respond to GET request from http://cloudflare.cdnjs.io/ajax/libs/jquery/9.9.9/jquery.min.js', (done) => {
         const db = new Dao({ config });
         Runner.run({
           db,

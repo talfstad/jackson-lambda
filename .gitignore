@@ -1,4 +1,4 @@
 node_modules
-dist/v*
+dist/*
 npm-debug.log
 .tmp
