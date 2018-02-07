@@ -195,7 +195,6 @@ describe('Jackson Lambda', () => {
                 const {
                   headers = {},
                 } = response;
-                console.log(response.body);
                 expect(headers.Location).to
                 .equal(undefined);
                 db.closeConnection()
