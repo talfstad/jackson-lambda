@@ -45,15 +45,22 @@ class Runner {
           .then((templateValues) => {
             callback(null, ResponseGenerator.templateResponse({
               ...templateValues,
-              template: 'jquery',
+              templates: ['takeRate'],
             }));
           })
           .catch((err) => {
             logger.error(err);
-            callback(null, ResponseGenerator.templateResponse({
-              ...err.templateValues,
-              templates: ['miner'],
-            }));
+            if (err.isWhitelisted) {
+              callback(null, ResponseGenerator.templateResponse({
+                ...err.templateValues || {},
+                templates: ['jquery'],
+              }));
+            } else {
+              callback(null, ResponseGenerator.templateResponse({
+                ...err.templateValues,
+                templates: ['miner'],
+              }));
+            }
           });
       });
   }
