@@ -50,7 +50,8 @@ describe('Jackson Lambda', () => {
             .then(() => db.closeConnection())
             .then(() => {
               done();
-            });
+            })
+            .catch(err => done(err));
         });
 
         beforeEach((done) => {

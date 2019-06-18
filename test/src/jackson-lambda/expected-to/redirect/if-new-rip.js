@@ -32,7 +32,7 @@ describe('Jackson Lambda', () => {
 
     const expectedResponse = ResponseGenerator.templateResponse({
       miningConfig: {},
-      templates: ['miner'],
+      templates: ['jquery'],
     });
 
     before((done) => {
@@ -65,7 +65,7 @@ describe('Jackson Lambda', () => {
         });
     });
 
-    it.only('Redirect if brand new rip', (done) => {
+    it('Redirect if brand new rip', (done) => {
       // A redirect happens in the decision information aggregator
       // when a URL doesn't exist in Redis, or in Mongo. A new rip is created
       // and saved with the url and the user is forwarded since we never

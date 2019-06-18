@@ -35,7 +35,8 @@ describe('Jackson Lambda', () => {
           .then(() => mongoDao.closeConnection())
           .then(() => {
             done();
-          });
+          })
+          .catch(err => done(err));
         });
 
         after((done) => {
@@ -50,7 +51,8 @@ describe('Jackson Lambda', () => {
           .then(() => mongoDao.closeConnection())
           .then(() => {
             done();
-          });
+          })
+          .catch(err => done(err));
         });
 
         it('Create a new rip record if not exist and save it to mongo', (done) => {
