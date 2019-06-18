@@ -4,7 +4,6 @@
   "description": "Find more information on Jackson Lambda here: https://github.com/Buildcave/jackson-lambda",
   "scripts": {
     "deploy": "node ./scripts/deploy-lambda.js",
-    "prepush": "npm run build:verify && npm run build",
     "lint": "eslint .",
     "build": "npm run build:templates && webpack -p",
     "build:verify": "npm run test && npm run lint",
